@@ -1,0 +1,9 @@
+.goals-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+}
+
+.goals-header img {
+    margin: 0;
+}

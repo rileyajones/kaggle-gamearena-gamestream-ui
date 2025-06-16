@@ -1,0 +1,9 @@
+.thoughts-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-m);
+}
+
+.thoughts-header img {
+    margin: 0;
+}
