@@ -10,8 +10,10 @@ img:hover {
 	display: grid;
 	grid-template-areas: 'title right-panel'
 	                     'viewer right-panel';
-	grid-template-rows: auto auto;
-	grid-template-rows: auto auto;
+	grid-template-columns: 1fr auto;
+	grid-template-rows: auto 1fr;
+	gap: var(--spacing-l);
+	height: 100%;
 }
 
 .home .title {
@@ -24,6 +26,7 @@ img:hover {
 
 .home .right-panel {
 	grid-area: right-panel;
+	min-width: 25em;
 }
 
 .home section {

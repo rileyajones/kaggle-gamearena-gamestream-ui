@@ -3,6 +3,10 @@ export interface ModelMetadata {
     id: string;
     name: string;
     icon: string;
+    rank: {
+        numerator: number;
+        denominator: number;
+    };
 }
 
 /** A generic turn in a game. */
@@ -16,6 +20,7 @@ export interface Turn {
 export interface GameMetadata {
     name: string;
     viewerUrl: string;
+    matchTime: number;
 }
 
 /** A models thought. */

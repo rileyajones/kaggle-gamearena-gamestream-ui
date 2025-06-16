@@ -7,3 +7,9 @@
 .thoughts-header img {
     margin: 0;
 }
+
+.thoughts-container {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: var(--spacing-m);
+}

@@ -5,13 +5,14 @@ import './style.css';
 
 export const Thoughts = () => {
     const streamContext = useContext(StreamContext);
-    const currentModelId = streamContext.turns[streamContext.turns.length - 1]?.modelId;
+    const currentModelId = streamContext.turns[streamContext.turns.length - 1]?.modelId ?? streamContext.models[0]?.id;
     const currentThoughts = streamContext.thoughts[currentModelId] ?? [];
 
     return <>
         <h2 class="thoughts-header"><img src={neurologyIcon} /> Thoughts</h2>
-        <div>
+        <div class="thoughts-container">
             {currentThoughts.map((thought, index) => <pre key={`${currentModelId}-${index}`}>{thought}</pre>)}
+            {!currentThoughts.length && 'No thoughts'}
         </div>
     </>
 }
