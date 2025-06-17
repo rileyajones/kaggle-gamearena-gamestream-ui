@@ -11,10 +11,14 @@ export const Players = () => {
                     <div class="name">
                         {model.name}
                     </div>
-                    <div class="rank">
-                        {model.rank.numerator}/{model.rank.denominator}
-                    </div>
-                    <img src={model.icon} />
+                    {
+                        model.rank &&
+                        <div class="rank">
+                            {model.rank.numerator}/{model.rank.denominator}
+                        </div>
+                    }
+
+                    {model.icon && <img src={model.icon} />}
                 </li>
                 {index < streamContext.models.length - 1 && 'vs'}
             </>

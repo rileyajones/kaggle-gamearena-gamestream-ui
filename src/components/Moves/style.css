@@ -1,6 +1,8 @@
 .moves-table-container {
     border: 1px solid var(--border-color);
     border-radius: 8px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .moves-table {
@@ -8,8 +10,19 @@
     border-collapse: collapse;
 }
 
+.moves-table thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--background-color);
+}
+
+.moves-table th {
+    width: 17em;
+}
+
 .moves-table tr {
     border-bottom: 1px solid var(--border-color);
+    height: 2em;
 }
 
 .moves-table th:not(:last-of-type),

@@ -1,15 +1,16 @@
 import { createContext } from "preact";
 import { PropsWithChildren, useState, useEffect } from "preact/compat";
-import { ModelMetadata, GameMetadata, Turn, Thought, Goal } from "./types";
+import { ModelMetadata, GameMetadata, Step, Thought, Goal, EpisodeStep, Episode } from "./types";
 import { readStreamChunks } from "./utils";
 
 /** The interface definition of the StreamContext */
 export interface StreamContextI {
     models: ModelMetadata[];
     game: GameMetadata;
-    turns: Turn[];
+    steps: Step[][];
     thoughts: { [modelId: string]: Thought[] };
     goals: { [modelId: string]: Goal[] };
+    currentModelId: string;
 }
 
 const defaultStreamContext: StreamContextI = {
@@ -19,9 +20,10 @@ const defaultStreamContext: StreamContextI = {
         viewerUrl: '',
         matchTime: 0,
     },
-    turns: [],
+    steps: [],
     thoughts: {},
     goals: {},
+    currentModelId: '',
 }
 
 /** The injectable context object responsable for storing information about the current stream. */
@@ -34,26 +36,26 @@ async function fetchMetadata() {
     return response.json();
 }
 
-async function streamThoughts(modelId: string, stream: (chunk: { done: boolean, value: string | undefined }) => void) {
-    for await (const chunk of readStreamChunks(`http://localhost:3001/thoughts/${modelId}`)) {
-        const value = chunk.value ? new TextDecoder().decode(chunk.value) : undefined;
-        stream({ value, done: chunk.done })
-    }
-}
-
-async function streamGoals(modelId: string, stream: (chunk: { done: boolean, value: string }) => void) {
-    for await (const chunk of readStreamChunks(`http://localhost:3001/goals/${modelId}`)) {
-        const value = chunk.value ? new TextDecoder().decode(chunk.value) : undefined;
-        stream({ value, done: chunk.done })
-    }
-}
-
-
-async function streamTurns(stream: (chunk: { done: boolean, value: Turn }) => void) {
+async function streamTurns(stream: (chunk: { done: boolean, value: Step }) => void) {
     for await (const chunk of readStreamChunks(`http://localhost:3001/turns`)) {
         const value = chunk.value ? new TextDecoder().decode(chunk.value) : undefined;
-        stream({ value: JSON.parse(value), done: chunk.done })
+        stream({ value: JSON.parse(value), done: chunk.done });
     }
+}
+
+interface StepsChunk {
+    steps: EpisodeStep[];
+}
+
+async function streamEpisode(stream: (chunk: { done: boolean, value: Episode | StepsChunk }) => void) {
+    for await (const chunk of readStreamChunks('http://localhost:3001/episode')) {
+        const value = chunk.value ? JSON.parse(new TextDecoder().decode(chunk.value)) : undefined;
+        stream({ value, done: chunk.done });
+    }
+}
+
+function isStepsChunk(value: Episode | StepsChunk): value is StepsChunk {
+    return Boolean((value as StepsChunk).steps);
 }
 
 export const StreamContextProvider = (props: StreamContextProviderProps) => {
@@ -61,44 +63,39 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     const [game, setGame] = useState(defaultStreamContext.game);
     const [thoughts, setThoughts] = useState(defaultStreamContext.thoughts);
     const [goals, setGoals] = useState(defaultStreamContext.goals);
-    const [turns, setTurns] = useState(defaultStreamContext.turns);
+    const [steps, setSteps] = useState(defaultStreamContext.steps);
 
     useEffect(() => {
-        (async () => {
-            const res = await fetchMetadata();
-            setModels(res.models);
-            setGame(res.game);
+        let nextModels = [...models];
+        let nextThoughts = { ...thoughts };
+        let nextGoals = { ...goals };
+        let nextSteps = [...steps];
+        streamEpisode(({ value }) => {
+            if (!value) return;
+            if (isStepsChunk(value)) {
+                nextSteps = [...nextSteps, value.steps.map((step, index) => {
+                    const modelId = nextModels[nextModels.length % index - 1]?.id;
+                    return {
+                        // DO_NOT_SUBMIT this is a gross hack to make chess work.
+                        // modelId: step.observation.mark === 'white' ? nextModels[0].id : nextModels[1].id,
+                        modelId,
+                        time: Date.now(),
+                        gameData: step,
+                    };
+                })];
+                setSteps(nextSteps);
+                return;
+            }
 
-            let nextThoughts = { ...thoughts };
-            res.models.forEach((model) => {
-                streamThoughts(model.id, ({ value }) => {
-                    if (!value) return;
-                    nextThoughts = { ...nextThoughts };
-                    const currentModelThoughts = (nextThoughts[model.id] ?? []);
-                    nextThoughts[model.id] = currentModelThoughts.concat(value);
-                    setThoughts(nextThoughts);
-                });
-            });
+            const episode = value as Episode;
 
-            let nextGoals = { ...goals };
-            res.models.forEach((model) => {
-                streamGoals(model.id, ({ value }) => {
-                    if (!value) return;
-                    nextGoals = { ...nextGoals };
-                    const currentModelGoals = (nextGoals[model.id] ?? []);
-                    nextGoals[model.id] = currentModelGoals.concat(value);
-                    setGoals(nextGoals);
-                });
-            });
-
-            let nextTurns = [...turns];
-            streamTurns(({ value }) => {
-                if (!value) return;
-                nextTurns = [...nextTurns];
-                nextTurns.push(value);
-                setTurns(nextTurns);
+            nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName }));
+            setModels(nextModels);
+            setGame({
+                name: episode.name,
+                viewerUrl: 'http://localhost:8081/chess_player.html',
             })
-        })();
+        });
     }, []);
 
     const context = {
@@ -107,7 +104,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         game,
         thoughts,
         goals,
-        turns,
+        steps,
+        currentModelId: steps[steps.length - 1]?.find((step) => step.gameData.status === 'ACTIVE')?.modelId ?? '',
     }
 
     return <StreamContext.Provider value={context}>
