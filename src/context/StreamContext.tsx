@@ -1,12 +1,15 @@
 import { createContext } from "preact";
 import { PropsWithChildren, useState, useEffect } from "preact/compat";
-import { ModelMetadata, GameMetadata, Step, Thought, Goal, EpisodeStep, Episode } from "./types";
+import { ModelMetadata, GameMetadata, Step, Thought, Goal, Episode } from "./types";
 import { readStreamChunks } from "./utils";
 
 /** The interface definition of the StreamContext */
 export interface StreamContextI {
     models: ModelMetadata[];
     game: GameMetadata;
+    gameState: {
+        step: number;
+    };
     steps: Step[][];
     thoughts: { [modelId: string]: Thought[] };
     goals: { [modelId: string]: Goal[] };
@@ -19,6 +22,9 @@ const defaultStreamContext: StreamContextI = {
         name: '',
         viewerUrl: '',
         matchTime: 0,
+    },
+    gameState: {
+        step: 0,
     },
     steps: [],
     thoughts: {},
@@ -44,7 +50,7 @@ async function streamTurns(stream: (chunk: { done: boolean, value: Step }) => vo
 }
 
 interface StepsChunk {
-    steps: EpisodeStep[];
+    steps: Step[][];
 }
 
 async function streamEpisode(stream: (chunk: { done: boolean, value: Episode | StepsChunk }) => void) {
@@ -52,6 +58,11 @@ async function streamEpisode(stream: (chunk: { done: boolean, value: Episode | S
         const value = chunk.value ? JSON.parse(new TextDecoder().decode(chunk.value)) : undefined;
         stream({ value, done: chunk.done });
     }
+}
+
+async function fetchEpisode(id: string): Promise<Episode & StepsChunk> {
+    const response = await fetch(`http://localhost:3001/download/episode/${id}`);
+    return response.json();
 }
 
 function isStepsChunk(value: Episode | StepsChunk): value is StepsChunk {
@@ -65,39 +76,61 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     const [goals, setGoals] = useState(defaultStreamContext.goals);
     const [steps, setSteps] = useState(defaultStreamContext.steps);
 
+    const params = new URLSearchParams(window.location.search);
+    const episodeId = params.get('episodeId');
+
     useEffect(() => {
         let nextModels = [...models];
         let nextThoughts = { ...thoughts };
         let nextGoals = { ...goals };
         let nextSteps = [...steps];
-        streamEpisode(({ value }) => {
-            if (!value) return;
-            if (isStepsChunk(value)) {
-                nextSteps = [...nextSteps, value.steps.map((step, index) => {
-                    const modelId = nextModels[nextModels.length % index - 1]?.id;
-                    return {
-                        // DO_NOT_SUBMIT this is a gross hack to make chess work.
-                        // modelId: step.observation.mark === 'white' ? nextModels[0].id : nextModels[1].id,
-                        modelId,
-                        time: Date.now(),
-                        gameData: step,
-                    };
-                })];
-                setSteps(nextSteps);
-                return;
-            }
-
-            const episode = value as Episode;
-
+        (async () => {
+            const episode = await fetchEpisode(episodeId);
             nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName }));
             setModels(nextModels);
             setGame({
                 name: episode.name,
                 viewerUrl: 'http://localhost:8081/chess_player.html',
-            })
-        });
-    }, []);
+            });
+            nextSteps = episode.steps.map((step) => {
+                return step.map((s, index) => {
+                    const modelId = nextModels[index % (nextModels.length)]?.id;
+                    return {
+                        modelId,
+                        ...s,
+                    };
+                })
+            });
+            setSteps(nextSteps);
 
+        })();
+        // streamEpisode(({ value }) => {
+        //     if (!value) return;
+        //     if (isStepsChunk(value)) {
+        //         nextSteps = [...nextSteps, value.steps.map((step, index) => {
+        //             const modelId = nextModels[nextSteps.length % (nextModels.length)]?.id;
+        //             return {
+        //                 modelId,
+        //                 time: Date.now(),
+        //                 gameData: step,
+        //             };
+        //         })];
+        //         setSteps(nextSteps);
+        //         return;
+        //     }
+
+        //     const episode = value as Episode;
+
+        //     nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName }));
+        //     setModels(nextModels);
+        //     setGame({
+        //         name: episode.name,
+        //         viewerUrl: 'http://localhost:8081/chess_player.html',
+        //     })
+        // });
+    }, [episodeId]);
+
+    const currentModelId = models[(steps.length - 1) % models.length]?.id;
     const context = {
         ...defaultStreamContext,
         models,
@@ -105,7 +138,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         thoughts,
         goals,
         steps,
-        currentModelId: steps[steps.length - 1]?.find((step) => step.gameData.status === 'ACTIVE')?.modelId ?? '',
+        currentModelId,
     }
 
     return <StreamContext.Provider value={context}>

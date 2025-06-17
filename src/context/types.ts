@@ -9,13 +9,6 @@ export interface ModelMetadata {
     };
 }
 
-/** A generic turn in a game. */
-export interface Step {
-    modelId: string;
-    time: number;
-    gameData: EpisodeStep;
-}
-
 /** Metadata about the a game. */
 export interface GameMetadata {
     name: string;
@@ -135,7 +128,8 @@ export interface Episode {
     version: string;
 };
 
-export type EpisodeStep = {
+export type Step = {
+    modelId: string;
     action: string;
     info: {};
     observation: {
