@@ -6,16 +6,23 @@
     gap: var(--spacing-m);
 }
 
+.players-list .active {
+    border-color: var(--border-color-variant);
+}
+
 .players-list li {
     display: inline-grid;
     align-items: center;
-    column-gap: var(--spacing-m);
     padding: var(--spacing-m);
     border: 1px solid var(--border-color);
     border-radius: 8px;
     grid-template-areas: 'name icon'
                          'rank icon';
     grid-template-columns: 1fr auto;
+}
+
+.players-list li:has(:nth-child(2)) {
+    column-gap: var(--spacing-m);
 }
 
 .players-list .name {

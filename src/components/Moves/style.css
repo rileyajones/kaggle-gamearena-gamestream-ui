@@ -1,7 +1,7 @@
 .moves-table-container {
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    max-height: 400px;
+    height: 400px;
     overflow-y: auto;
 }
 

@@ -8,16 +8,15 @@ import './style.css';
 
 export function Home() {
 	return (
-		<div class="home">
-			<div class="title">
+		<div className="home">
+			<div className="title">
 				<StreamTitle />
 				<Players />
 			</div>
-			<div class="viewer">
+			<div className="viewer">
 				<GameViewer />
 			</div>
-			<div class="right-panel">
-
+			<div className="right-panel">
 				<Moves />
 				<Goals />
 				<Thoughts />

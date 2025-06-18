@@ -28,6 +28,24 @@ export async function* readStreamChunks(
         }
     } catch (error) {
         console.error('Error reading stream:', error);
-        throw error; // Re-throw to allow the caller to handle it.
+        throw error;
+    }
+}
+
+/** Waits for a specified number of milliseconds */
+export function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Simulates text streaming in */
+export async function* streamString(chunks: string[], options?: { abortController: AbortController, speed?: number }) {
+    let buffer = '';
+    for (const chunk of chunks) {
+        if (options.abortController?.signal.aborted) {
+            return;
+        }
+        await sleep(options?.speed ?? 10);
+        buffer += chunk;
+        yield buffer;
     }
 }

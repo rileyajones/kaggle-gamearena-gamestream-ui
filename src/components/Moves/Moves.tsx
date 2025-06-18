@@ -24,8 +24,8 @@ export const Moves = () => {
     }, [movesContainer, rows.length]);
 
     return (
-        <div class="moves-table-container" ref={movesContainer}>
-            <table class="moves-table">
+        <div className="moves-table-container" ref={movesContainer}>
+            <table className="moves-table">
                 <thead>
                     <tr>
                         {models.map((model) => <th key={model.id}>

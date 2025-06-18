@@ -1,26 +1,27 @@
 import { useContext } from 'preact/hooks';
 import { StreamContext } from '../../context/StreamContext';
 import './style.css';
+import { classNames } from '../../utils/classnames';
 
 export const Players = () => {
-    const streamContext = useContext(StreamContext);
-    return <ul class="players-list">
-        {streamContext.models.map((model, index) =>
+    const { models, currentModelId } = useContext(StreamContext);
+    return <ul className="players-list">
+        {models.map((model, index) =>
             <>
-                <li key={model.id}>
-                    <div class="name">
+                <li key={model.id} className={classNames(model.id === currentModelId && 'active')}>
+                    <div className="name">
                         {model.name}
                     </div>
                     {
                         model.rank &&
-                        <div class="rank">
+                        <div className="rank">
                             {model.rank.numerator}/{model.rank.denominator}
                         </div>
                     }
 
                     {model.icon && <img src={model.icon} />}
                 </li>
-                {index < streamContext.models.length - 1 && 'vs'}
+                {index < models.length - 1 && 'vs'}
             </>
         )}
     </ul>
