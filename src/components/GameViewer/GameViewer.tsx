@@ -1,15 +1,18 @@
 import { useContext, useEffect, useRef, useState } from "preact/hooks";
 import { StreamContext } from "../../context/StreamContext";
-import './style.css';
 import { classNames } from "../../utils/classnames";
+import './style.css';
 
 export const GameViewer = () => {
-    const { steps, episode, game } = useContext(StreamContext);
-    const [initialized, setInitialized] = useState(false)
+    const { steps, episode, game, playback } = useContext(StreamContext);
+    const [loaded, setLoaded] = useState(false);
     const iframeRef = useRef();
+
+    const currentIframe = iframeRef?.current as HTMLIFrameElement | undefined;
+    const fullyInitialized = currentIframe && game.viewerUrl && loaded;
+
     useEffect(() => {
-        const currentIframe = iframeRef?.current as HTMLIFrameElement | undefined;
-        if (!currentIframe || !game.viewerUrl) return;
+        if (!fullyInitialized) return;
         const windowKaggle = {
             'debug': false,
             'playing': false,
@@ -18,10 +21,10 @@ export const GameViewer = () => {
             'controls': false,
             'mode': 'html',
             'logs': [[]],
-            'step': steps.length,
+            'step': playback.currentStep,
             'environment': {
                 ...episode,
-                'gamestream': true,
+                'viewer': 'gamestream',
             },
         };
 
@@ -29,9 +32,21 @@ export const GameViewer = () => {
         // Waiting a couple milliseconds for the frame to rerender.
         setTimeout(() => {
             currentIframe.contentWindow.postMessage({ setSteps: steps.map((step) => [step[0], step[1]]) }, game.viewerUrl);
-            setInitialized(true);
         }, 200);
-    }, [iframeRef, steps]);
+    }, [fullyInitialized, playback, steps]);
 
-    return <iframe ref={iframeRef} src={game.viewerUrl} className={classNames(!initialized && 'hidden')}></iframe>
+
+    function maybeSetLoaded() {
+        if (!game.viewerUrl) return;
+        // Kick this to the back of the stack to ensure the render is complete.
+        setTimeout(() => {
+            setLoaded(true);
+        });
+    }
+
+    return <iframe
+        ref={iframeRef}
+        src={game.viewerUrl}
+        className={classNames(!fullyInitialized && 'hidden')}
+        onLoad={maybeSetLoaded}></iframe>;
 }

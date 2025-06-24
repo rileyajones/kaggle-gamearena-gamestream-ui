@@ -1,6 +1,6 @@
 import { createContext } from "preact";
 import { PropsWithChildren, useState, useEffect } from "preact/compat";
-import { ModelMetadata, GameMetadata, Step, Thought, Goal, Episode } from "./types";
+import { ModelMetadata, GameMetadata, Step, Thought, Goal, Episode, Playback } from "./types";
 import { readStreamChunks, sleep, streamString } from "./utils";
 
 /** The interface definition of the StreamContext */
@@ -11,10 +11,13 @@ export interface StreamContextI {
     gameState: {
         step: number;
     };
+    playback: Playback;
     steps: Step[][];
     thoughts: { [modelId: string]: Thought[] };
     goals: { [modelId: string]: Goal[] };
     currentModelId: string;
+    showControls: boolean;
+    setPlayback: (playback: Playback) => void;
 }
 
 const defaultStreamContext: StreamContextI = {
@@ -28,10 +31,17 @@ const defaultStreamContext: StreamContextI = {
     gameState: {
         step: 0,
     },
+    playback: {
+        playing: false,
+        currentStep: 0,
+        speed: 1,
+    },
     steps: [],
     thoughts: {},
     goals: {},
     currentModelId: '',
+    showControls: false,
+    setPlayback: () => { },
 }
 
 /** The injectable context object responsable for storing information about the current stream. */
@@ -48,7 +58,6 @@ async function fetchEpisode(id: string): Promise<Episode & StepsChunk> {
     return response.json();
 }
 
-// DO_NOT_SUBMIT
 const textStreams: AbortController[] = [];
 const stepStreams: AbortController[] = [];
 
@@ -58,13 +67,14 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     const [steps, setSteps] = useState(defaultStreamContext.steps);
     const [episode, setEpisode] = useState(defaultStreamContext.episode);
     const [thoughts, setThoughts] = useState(defaultStreamContext.thoughts);
+    const [playback, setPlayback] = useState(defaultStreamContext.playback);
 
     const params = new URLSearchParams(window.location.search);
     const episodeId = params.get('episodeId');
+    const showControls = params.has('showControls');
 
     useEffect(() => {
         let nextModels = [...models];
-        let nextSteps = [...steps];
         (async () => {
             const episode = await fetchEpisode(episodeId);
             setEpisode(episode);
@@ -74,18 +84,27 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
                 name: episode.name,
                 viewerUrl: 'http://localhost:8081/chess_player.html',
             });
+        })();
+    }, [episodeId]);
+
+    useEffect(() => {
+        (async () => {
+            let nextSteps = [...steps];
             while (stepStreams.length) {
                 const controller = stepStreams.pop();
                 controller.abort();
             }
+            if (!episode || !playback.playing) return;
             const controller = new AbortController();
             stepStreams.push(controller);
-            for (let i = 0; i < episode.steps.length; i++) {
+            const nextPlayback = { ...playback };
+            for (let i = nextPlayback.currentStep; i < episode.steps.length; i++) {
                 // DO_NOT_SUBMIT this speed should be configurable. This will also break if rerenders occur.
-                await sleep(500);
+                await sleep(500 * nextPlayback.speed);
+                nextPlayback.currentStep = i;
                 nextSteps = episode.steps.slice(0, i).map((step) => {
                     return step.map((actions, index) => {
-                        const modelId = nextModels[index % (nextModels.length)]?.id;
+                        const modelId = models[index % (models.length)]?.id;
                         return {
                             modelId,
                             ...actions,
@@ -96,10 +115,10 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
                     return;
                 }
                 setSteps(nextSteps);
+                setPlayback(nextPlayback)
             }
-
         })();
-    }, [episodeId]);
+    }, [playback.playing, episode])
 
     const currentModelId = models[(steps.length - 1) % models.length]?.id;
 
@@ -136,6 +155,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         steps,
         currentModelId,
         thoughts,
+        playback,
+        showControls,
+        setPlayback,
     }
 
     return <StreamContext.Provider value={context}>

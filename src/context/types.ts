@@ -16,6 +16,12 @@ export interface GameMetadata {
     matchTime?: number;
 }
 
+export interface Playback {
+    playing: boolean;
+    currentStep: number;
+    speed: number;
+}
+
 /** A models thought. */
 export type Thought = string;
 
@@ -126,6 +132,7 @@ export interface Episode {
     statuses: string[];
     title: string;
     version: string;
+    steps: Array<Exclude<Step, 'modelId'>[]>;
 };
 
 export type Step = {

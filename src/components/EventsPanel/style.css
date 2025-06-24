@@ -1,0 +1,53 @@
+
+.step-outline .content {
+    padding: var(--spacing-l) 0;
+    display: flex;
+    align-items: center;
+    column-gap: var(--spacing-m);
+}
+
+.step-outline:not(:last-of-type) .content {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.step-outline .metadata-section {
+    grid-area: metadata;
+    font-size: 0.7em;
+    color: var(--surface-color-variant);
+    text-transform: uppercase;
+}
+
+.step-outline .metadata-section .metadata:not(:last-child)::after {
+    content: '·';
+}
+
+.step-outline .metadata-section,
+.step-outline .metadata-section .metadata {
+    display: inline-flex;
+    gap: var(--spacing-s);
+}
+
+.events-panel {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.arrow {
+    font-size: 1.5em;
+}
+
+.steps {
+    flex: 1;
+    padding: var(--spacing-l);
+}
+
+.agent-responding {
+    background: rgba(255, 255, 255, 0.30);
+    padding: var(--spacing-m) var(--spacing-l);
+}
+
+.current-step .model {
+    align-self: start;
+}

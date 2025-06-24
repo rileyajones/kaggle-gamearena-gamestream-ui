@@ -1,0 +1,28 @@
+.icon-button {
+    position: relative;
+    background: none;
+    border: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.icon-button .icon:not(:hover) {
+    opacity: 0.5;
+}
+
+.icon-button .background {
+    position: absolute;
+    opacity: 0.3;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.icon-button:hover .background {
+    visibility: visible;
+    background: var(--background-color);
+    filter: blur(4px);
+}

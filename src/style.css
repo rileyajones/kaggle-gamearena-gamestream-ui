@@ -4,6 +4,7 @@
 	font-weight: 400;
 
 	--surface-color: #222;
+	--surface-color-variant: #616161;
 	--title-color: #222;
 	--background-color: #ffffff;
 
@@ -37,19 +38,14 @@ body {
 	margin: 0;
 }
 
-@media (max-width: 639px) {
-	main {
-		margin: 2rem;
-	}
-}
-
 @media (prefers-color-scheme: dark) {
 	:root {
-		--surface-color: #ccc;
+		--surface-color: #E8EAED;
+		--surface-color-variant: #BDC1C6;
 		--title-color: #20BEFF;
-		--background-color: rgb(0, 11, 42);
+		--background-color: #1C1D20;
 
-		--border-color: #424242;
+		--border-color: #DADCE0;
 		--border-color-variant: #cfd5da;
 	}
 }
