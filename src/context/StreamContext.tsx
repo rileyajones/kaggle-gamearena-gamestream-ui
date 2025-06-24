@@ -82,7 +82,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
             setModels(nextModels);
             setGame({
                 name: episode.name,
-                viewerUrl: 'http://localhost:8081/chess_player.html',
+                viewerUrl: 'http://localhost:8081/chess_player_2.html',
+                rendererUrl: 'http://localhost:8081/chess.js',
             });
         })();
     }, [episodeId]);
@@ -97,11 +98,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
             if (!episode || !playback.playing) return;
             const controller = new AbortController();
             stepStreams.push(controller);
-            const nextPlayback = { ...playback };
-            for (let i = nextPlayback.currentStep; i < episode.steps.length; i++) {
+            for (let i = playback.currentStep; i <= episode.steps.length; i++) {
                 // DO_NOT_SUBMIT this speed should be configurable. This will also break if rerenders occur.
-                await sleep(500 * nextPlayback.speed);
-                nextPlayback.currentStep = i;
+                await sleep(500 / playback.speed);
                 nextSteps = episode.steps.slice(0, i).map((step) => {
                     return step.map((actions, index) => {
                         const modelId = models[index % (models.length)]?.id;
@@ -115,10 +114,13 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
                     return;
                 }
                 setSteps(nextSteps);
-                setPlayback(nextPlayback)
+                setPlayback({
+                    ...playback,
+                    currentStep: i,
+                });
             }
         })();
-    }, [playback.playing, episode])
+    }, [playback.playing, playback.speed, episode])
 
     const currentModelId = models[(steps.length - 1) % models.length]?.id;
 

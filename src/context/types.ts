@@ -14,6 +14,7 @@ export interface GameMetadata {
     name: string;
     viewerUrl: string;
     matchTime?: number;
+    rendererUrl: string;
 }
 
 export interface Playback {

@@ -1,9 +1,10 @@
-import { useContext } from 'preact/hooks';
+import { useContext, useEffect, useState } from 'preact/hooks';
 import { StreamContext } from '../../context/StreamContext';
 import './style.css';
 import { ModelMetadata, Step, Thought } from '../../context/types';
 import { PropsWithChildren } from 'preact/compat';
 import { classNames } from '../../utils/classnames';
+import { sleep } from '../../context/utils';
 
 
 interface StepOutlineProps extends PropsWithChildren {
@@ -60,9 +61,17 @@ interface AgentRespondingProps {
 }
 
 const AgentResponding = (props: AgentRespondingProps) => {
+    const [dotCount, setDotCount] = useState(0);
+    useEffect(() => {
+        (async () => {
+            await sleep(250);
+            setDotCount((dotCount + 1) % 4);
+        })();
+    }, [dotCount]);
+
     return <div className="agent-responding">
         {props.model.icon ? <img src={props.model.icon} /> : props.model.name}
-        Agent is responding...
+        Agent is responding{Array.from({ length: dotCount }, () => <>.</>)}
     </div>
 }
 
@@ -73,7 +82,7 @@ function getActiveModelStep(steps: Step[]) {
 const LEFT_PANEL_EVENTS = 4;
 
 export const EventsPanel = () => {
-    const { steps, models, currentModelId, thoughts } = useContext(StreamContext);
+    const { steps, models, currentModelId, thoughts, playback } = useContext(StreamContext);
     const latestSteps = steps.slice(-LEFT_PANEL_EVENTS);
     const currentStep = latestSteps.pop() ?? [];
     const currentStepAction = getActiveModelStep(currentStep);
@@ -115,7 +124,7 @@ export const EventsPanel = () => {
                     thoughts={currentThoughts} />
             </div>
 
-            {!isDone && <AgentResponding model={currentModel} />}
+            {!isDone && playback.playing && <AgentResponding model={currentModel} />}
         </div>
     );
 }

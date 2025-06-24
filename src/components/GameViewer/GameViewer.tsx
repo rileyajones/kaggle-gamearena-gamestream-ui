@@ -24,6 +24,7 @@ export const GameViewer = () => {
             'step': playback.currentStep,
             'environment': {
                 ...episode,
+                'rendererUrl': game.rendererUrl,
                 'viewer': 'gamestream',
             },
         };

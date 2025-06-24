@@ -2,3 +2,9 @@
     display: flex;
     gap: var(--spacing-m);
 }
+
+.controls .speed-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
