@@ -22,7 +22,9 @@ app.get('/api/episode/:episodeId', async (req, res) => {
 app.use('/static', express.static(path.join(__dirname, '../static')));
 
 // Used for serving the ui in production mode
-app.use('/', express.static(path.join(__dirname, '../../ui/dist')));
+if (process.env.NODE_ENV) {
+    app.use('/', express.static(path.join(__dirname, '../../ui/dist')));
+}
 
 const port = process.env.PORT ?? 3001;
 
