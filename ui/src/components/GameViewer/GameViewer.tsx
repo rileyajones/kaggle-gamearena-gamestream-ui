@@ -32,7 +32,7 @@ export const GameViewer = () => {
         currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
         // Waiting a couple milliseconds for the frame to rerender.
         setTimeout(() => {
-            currentIframe.contentWindow.postMessage({ setSteps: steps.map((step) => [step[0], step[1]]) }, game.viewerUrl);
+            currentIframe.contentWindow.postMessage({ setSteps: steps }, game.viewerUrl);
         }, 200);
     }, [fullyInitialized, playback, steps]);
 

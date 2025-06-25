@@ -61,6 +61,11 @@ async function fetchEpisode(id: string): Promise<Episode & StepsChunk> {
     return response.json();
 }
 
+async function fetchEpisodeFile(filename: string): Promise<Episode & StepsChunk> {
+    const response = await fetch(`${backend}/static/${filename}`);
+    return response.json();
+}
+
 const textStreams: AbortController[] = [];
 const stepStreams: AbortController[] = [];
 
@@ -74,12 +79,14 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
 
     const params = new URLSearchParams(window.location.search);
     const episodeId = params.get('episodeId');
+    const episodeFile = params.get('episodeFile');
     const showControls = params.has('showControls');
 
     useEffect(() => {
+        if (!episodeId && !episodeFile) return;
         let nextModels = [...models];
         (async () => {
-            const episode = await fetchEpisode(episodeId);
+            const episode = episodeId ? await fetchEpisode(episodeId) : await fetchEpisodeFile(episodeFile);
             setEpisode(episode);
             nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName }));
             setModels(nextModels);
@@ -92,6 +99,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     }, [episodeId]);
 
     useEffect(() => {
+        if (!episode) return;
         (async () => {
             let nextSteps = [...steps];
             while (stepStreams.length) {
@@ -102,7 +110,6 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
             const controller = new AbortController();
             stepStreams.push(controller);
             for (let i = playback.currentStep; i <= episode.steps.length; i++) {
-                // DO_NOT_SUBMIT this speed should be configurable. This will also break if rerenders occur.
                 await sleep(500 / playback.speed);
                 nextSteps = episode.steps.slice(0, i).map((step) => {
                     return step.map((actions, index) => {

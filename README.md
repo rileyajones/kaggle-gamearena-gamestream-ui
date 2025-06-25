@@ -6,8 +6,9 @@ Begin by installing dependencies
 ```
 
 Based on the environment you've selected the ui will appear at either port `5173` or port `3001`. In order to view an episode
-you will need to provide an episode id via a query param e.g. `?episodeId=71475278`. The controls can also be enabled by the
-boolean query param `showControls`
+you will need to provide an episode id via a query param e.g. `?episodeId=71475278`. Episodes can also be loaded from json files placed in the server/static directory then referenced using `?episodeFile=${Filename}.json`.
+
+The controls can also be enabled by the boolean query param `showControls`
 
 ## Running in dev mode
 The development server runs on port 5173.
