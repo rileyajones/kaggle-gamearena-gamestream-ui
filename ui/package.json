@@ -2,16 +2,18 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "vite --host",
+		"dev": "concurrently 'vite --host' 'cd ../server && npm run dev'",
 		"build": "vite build",
 		"preview": "vite preview"
 	},
+	"author": "Riley Jones",
 	"dependencies": {
 		"preact": "^10.25.3",
 		"preact-iso": "^2.9.2"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "^2.9.3",
+		"concurrently": "^9.2.0",
 		"eslint": "^8.57.1",
 		"eslint-config-preact": "^1.5.0",
 		"typescript": "^5.8.3",

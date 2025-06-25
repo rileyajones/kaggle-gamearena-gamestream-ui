@@ -1,0 +1,24 @@
+{
+    "name": "gamestream-server",
+    "version": "1.0.0",
+    "description": "A simple server for providing static files and an api proxy used by the kaggle gamestream ui",
+    "main": "src/index.ts",
+    "scripts": {
+        "dev": "tsx src/index.ts",
+        "build": "tsc" 
+    },
+    "author": "Riley Jones",
+    "license": "ISC",
+    "dependencies": {
+        "@types/body-parser": "^1.19.6",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.3",
+        "body-parser": "^2.2.0",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "typescript": "^5.8.3"
+    },
+    "devDependencies": {
+        "tsx": "^4.20.3"
+    }
+}

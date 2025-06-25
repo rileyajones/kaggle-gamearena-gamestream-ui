@@ -1,15 +1,26 @@
-# `create-preact`
+# How to run this project
+Begin by installing dependencies
 
-<h2 align="center">
-  <img height="256" width="256" src="./src/assets/preact.svg">
-</h2>
+```console
+./setup.sh
+```
 
-<h3 align="center">Get started using Preact and Vite!</h3>
+## Running in dev mode
+```console
+cd ui && npm run dev
+```
 
-## Getting Started
+## Running in production mode
+```console
+./build-prod.sh
+```
 
--   `npm run dev` - Starts a dev server at http://localhost:5173/
+## Building the Docker container
+```console
+docker build -t kaggle/gamearena-stream-ui .
+```
 
--   `npm run build` - Builds for production, emitting to `dist/`
-
--   `npm run preview` - Starts a server at http://localhost:4173/ to test production build locally
+## Running the Docker container
+```console
+docker run -p 3001:3001 kaggle/gamearena-stream-ui
+```

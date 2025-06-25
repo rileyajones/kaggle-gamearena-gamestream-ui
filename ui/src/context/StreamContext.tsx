@@ -25,6 +25,7 @@ const defaultStreamContext: StreamContextI = {
     game: {
         name: '',
         viewerUrl: '',
+        rendererUrl: '',
         matchTime: 0,
     },
     episode: undefined,
@@ -53,8 +54,10 @@ interface StepsChunk {
     steps: Step[][];
 }
 
+const backend = import.meta.env.DEV ? 'http://localhost:3001' : window.location.origin; 
+
 async function fetchEpisode(id: string): Promise<Episode & StepsChunk> {
-    const response = await fetch(`http://localhost:3001/download/episode/${id}`);
+    const response = await fetch(`${backend}/api/episode/${id}`);
     return response.json();
 }
 
@@ -82,8 +85,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
             setModels(nextModels);
             setGame({
                 name: episode.name,
-                viewerUrl: 'http://localhost:8081/chess_player_2.html',
-                rendererUrl: 'http://localhost:8081/chess.js',
+                viewerUrl: `${backend}/static/player.html`,
+                rendererUrl: `${backend}/static/chess.js`,
             });
         })();
     }, [episodeId]);
