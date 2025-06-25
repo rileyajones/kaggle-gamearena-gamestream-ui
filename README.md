@@ -12,7 +12,7 @@ cd ui && npm run dev
 
 ## Running in production mode
 ```console
-./build-prod.sh
+./build-prod.sh && cd server/dist && node index.js
 ```
 
 ## Building the Docker container
