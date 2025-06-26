@@ -47,7 +47,8 @@ body {
 	margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
+// TODO(Uncomment this once the light theme is better supported)
+// @media (prefers-color-scheme: dark) {
 	:root {
 		--surface-color: #E8EAED;
 		--surface-color-variant: #BDC1C6;
@@ -56,4 +57,4 @@ body {
 		--border-color: #DADCE0;
 		--border-color-variant: #cfd5da;
 	}
-}
+// }
