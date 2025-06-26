@@ -1,0 +1,60 @@
+.step-outline {
+    &:not(:last-of-type) .content {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .content {
+        padding: var(--spacing-l) 0;
+        display: flex;
+        align-items: center;
+        column-gap: var(--spacing-m);
+    }
+
+    .metadata-section {
+        grid-area: metadata;
+        font-size: 0.7em;
+        color: var(--surface-color-variant);
+        text-transform: uppercase;
+
+        .metadata:not(:last-child)::after {
+            content: '·';
+        }
+    }
+
+    .metadata-section,
+    .metadata-section .metadata {
+        display: inline-flex;
+        gap: var(--spacing-s);
+    }
+}
+
+.events-panel {
+    width: 25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &.empty {
+        justify-content: center;
+        align-items: center;
+        font-size: 1.25em;
+    }
+}
+
+.arrow {
+    font-size: 1.5em;
+}
+
+.steps {
+    flex: 1;
+    padding: var(--spacing-l);
+}
+
+.agent-responding {
+    background: rgba(255, 255, 255, 0.30);
+    padding: var(--spacing-m) var(--spacing-l);
+}
+
+.current-step .model {
+    align-self: start;
+}

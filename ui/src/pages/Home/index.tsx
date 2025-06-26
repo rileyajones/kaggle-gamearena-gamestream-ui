@@ -4,7 +4,7 @@ import { EventsPanel } from '../../components/EventsPanel/EventsPanel';
 import { GameViewer } from '../../components/GameViewer/GameViewer';
 import { StreamTitle } from '../../components/StreamTitle/StreamTitle';
 import { StreamContext } from '../../context/StreamContext';
-import './style.css';
+import './style.scss';
 
 export function Home() {
 	const { showControls } = useContext(StreamContext);

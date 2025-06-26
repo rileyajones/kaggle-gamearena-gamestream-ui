@@ -82,6 +82,13 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     const episodeFile = params.get('episodeFile');
     const showControls = params.has('showControls');
 
+
+    useEffect(() => {
+        if (!showControls) {
+            setPlayback({...playback, playing: true});
+        }
+    }, [showControls]);
+
     useEffect(() => {
         if (!episodeId && !episodeFile) return;
         let nextModels = [...models];

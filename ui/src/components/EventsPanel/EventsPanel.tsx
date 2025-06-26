@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from 'preact/hooks';
 import { StreamContext } from '../../context/StreamContext';
-import './style.css';
 import { ModelMetadata, Step, Thought } from '../../context/types';
 import { PropsWithChildren } from 'preact/compat';
 import { classNames } from '../../utils/classnames';
 import { sleep } from '../../context/utils';
+import './style.scss';
 
 
 interface StepOutlineProps extends PropsWithChildren {
@@ -82,16 +82,16 @@ function getActiveModelStep(steps: Step[]) {
 const LEFT_PANEL_EVENTS = 4;
 
 export const EventsPanel = () => {
-    const { steps, models, currentModelId, thoughts, playback } = useContext(StreamContext);
+    const { steps, models, thoughts, playback } = useContext(StreamContext);
     const latestSteps = steps.slice(-LEFT_PANEL_EVENTS);
     const currentStep = latestSteps.pop() ?? [];
     const currentStepAction = getActiveModelStep(currentStep);
-    const currentThoughts = thoughts[currentModelId] ?? [];
-    const currentModelIndex = models.findIndex((model) => model.id === currentModelId);
+    const currentThoughts = thoughts[currentStepAction?.modelId] ?? [];
+    const currentModelIndex = models.findIndex((model) => model.id === currentStepAction?.modelId);
     const currentModel = models[currentModelIndex];
 
-    if (!currentStepAction || !currentModel || !currentModelId) {
-        return <></>;
+    if (!currentStepAction || !currentModel) {
+        return <div className="events-panel empty">No steps have been taken yet</div>;
     }
 
     const isDone = currentStep.every((action) => action.status === 'DONE');
