@@ -141,7 +141,9 @@ export type StepAction = string|StepActionObject;
 export interface Step {
     modelId: string;
     action: StepAction;
-    info: {};
+    info: {
+      timeTaken?: number;
+    };
     observation: {
         board: string;
         lastMove: string;

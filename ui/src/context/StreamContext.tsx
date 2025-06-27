@@ -111,7 +111,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const controller = new AbortController();
       stepStreams.push(controller);
       for (let i = playback.currentStep; i <= episode.steps.length; i++) {
-        await sleep(500 / playback.speed);
+        const timeTaken = episode.steps[i].find((action) => action.info.timeTaken)?.info.timeTaken ?? 500;
+        await sleep(timeTaken / playback.speed);
         nextSteps = episode.steps.slice(0, i).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
