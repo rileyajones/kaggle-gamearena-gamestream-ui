@@ -1,0 +1,23 @@
+.model-icon {
+  --icon-size: 36px;
+  position: relative;
+  height: var(--icon-size);
+
+  &:not(.retro) .icon {
+    position: relative;
+    background-color: var(--foreground-color);
+    border-radius: 50%;
+  }
+
+  svg,
+  .icon {
+    height: var(--icon-size);
+    width: var(--icon-size);
+  }
+
+  .icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

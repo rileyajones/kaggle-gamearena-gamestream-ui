@@ -7,18 +7,18 @@ import { StreamContextProvider } from './context/StreamContext';
 import './style.scss';
 
 export function App() {
-	return (
-		<LocationProvider>
-			<main>
-				<StreamContextProvider>
-					<Router>
-						<Route path="/" component={Home} />
-						<Route default component={NotFound} />
-					</Router>
-				</StreamContextProvider>
-			</main>
-		</LocationProvider>
-	);
+  return (
+    <LocationProvider>
+      <main>
+        <StreamContextProvider>
+          <Router>
+            <Route path="/" component={Home} />
+            <Route default component={NotFound} />
+          </Router>
+        </StreamContextProvider>
+      </main>
+    </LocationProvider>
+  );
 }
 
 render(<App />, document.getElementById('app'));

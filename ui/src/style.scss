@@ -1,60 +1,63 @@
 @import './styles/breakpoints';
 
 :root {
-	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-	line-height: 1.5;
-	font-weight: 400;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
 
 
-	font-synthesis: none;
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-text-size-adjust: 100%;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 
-	color: var(--surface-color);
-	background-color: var(--background-color);
+  color: var(--surface-color);
+  background-color: var(--background-color);
 
-	--spacing-xs: 0.125rem;
-	--spacing-s: 0.25rem;
-	--spacing-m: 0.5rem;
-	--spacing-l: 1rem;
-	--spacing-xl: 1.5rem;
-	--spacing-xxl: 2rem;
+  --spacing-xs: 0.125rem;
+  --spacing-s: 0.25rem;
+  --spacing-m: 0.5rem;
+  --spacing-l: 1rem;
+  --spacing-xl: 1.5rem;
+  --spacing-xxl: 2rem;
 
-	/* Max Widths */
-	--screen-xs: $screen-xs;
-	--screen-s: $screen-s;
-	--screen-m: $screen-m;
-	--screen-l: $screen-l;
+  /* Max Widths */
+  --screen-xs: $screen-xs;
+  --screen-s: $screen-s;
+  --screen-m: $screen-m;
+  --screen-l: $screen-l;
 
-	--surface-color: #222;
-	--surface-color-variant: #616161;
-	--title-color: #222;
-	--background-color: #ffffff;
-	--border-color: #dbdbdb;
-	--border-color-variant: #919191;
+  --surface-color: #222;
+  --surface-color-variant: #616161;
+  --title-color: #222;
+  --background-color: #ffffff;
+  --foreground-color: #000;
+  --border-color: #dbdbdb;
+  --border-color-variant: #919191;
 }
 
 main {
-	height: calc(100vh - 2 * var(--spacing-l));
-	padding: var(--spacing-l);
-	margin: auto;
-	max-width: 81.5rem;
+  height: calc(100vh - 2 * var(--spacing-l));
+  padding: var(--spacing-l);
+  margin: auto;
+  max-width: 81.5rem;
 }
 
 body {
-	margin: 0;
+  margin: 0;
 }
 
 // TODO(Uncomment this once the light theme is better supported)
 // @media (prefers-color-scheme: dark) {
-	:root {
-		--surface-color: #E8EAED;
-		--surface-color-variant: #BDC1C6;
-		--title-color: #20BEFF;
-		--background-color: #1C1D20;
-		--border-color: #DADCE0;
-		--border-color-variant: #cfd5da;
-	}
+:root {
+  --surface-color: #E8EAED;
+  --surface-color-variant: #BDC1C6;
+  --title-color: #20BEFF;
+  --background-color: #1C1D20;
+  --foreground-color: #E8EAED;
+  --border-color: #DADCE0;
+  --border-color-variant: #cfd5da;
+}
+
 // }

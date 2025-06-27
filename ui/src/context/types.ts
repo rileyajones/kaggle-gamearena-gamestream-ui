@@ -3,10 +3,11 @@ export interface ModelMetadata {
     id: string;
     name: string;
     icon?: string;
-    rank?: {
+    winLoss?: {
         numerator: number;
         denominator: number;
     };
+    rank?: number;
 }
 
 /** Metadata about the a game. */
@@ -22,12 +23,6 @@ export interface Playback {
     currentStep: number;
     speed: number;
 }
-
-/** A models thought. */
-export type Thought = string;
-
-/** A models goal. */
-export type Goal = string;
 
 export interface Episode {
     configuration: {
@@ -136,9 +131,16 @@ export interface Episode {
     steps: Array<Exclude<Step, 'modelId'>[]>;
 };
 
-export type Step = {
+export interface StepActionObject {
+    actionString?: string;
+    thoughts?: string;
+}
+
+export type StepAction = string|StepActionObject;
+
+export interface Step {
     modelId: string;
-    action: string;
+    action: StepAction;
     info: {};
     observation: {
         board: string;

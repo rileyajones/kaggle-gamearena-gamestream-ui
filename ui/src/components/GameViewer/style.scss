@@ -1,0 +1,26 @@
+.game-viewer {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  flex: 1;
+  overflow: hidden;
+
+  &.hidden {
+    visibility: hidden;
+  }
+
+  .playback-banner {
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-l);
+    display: flex;
+    gap: var(--spacing-l);
+  }
+
+  iframe {
+    border: none;
+    flex: 1;
+    width: 100%;
+  }
+}
