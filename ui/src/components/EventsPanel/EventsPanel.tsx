@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'preact/hooks';
+import { useContext, useRef, useState } from 'preact/hooks';
 import { StreamContext } from '../../context/StreamContext';
 import { ModelMetadata, Step } from '../../context/types';
 import { PropsWithChildren, memo } from 'preact/compat';
@@ -9,7 +9,6 @@ import './style.scss';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
 import { getActiveModelStep, getDelay, getThoughts } from '../../utils/step';
-import { DEFAULT_STEP_DELAY } from '../../consts';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -54,6 +53,7 @@ const PreviousStep = (props: PreviousStepProps) => {
 interface CurrentStepProps extends StepOutlineProps {
   step: Step;
   speed: number;
+  afterRender?: () => void;
 }
 
 const CurrentStep = memo((props: CurrentStepProps) => {
@@ -62,19 +62,23 @@ const CurrentStep = memo((props: CurrentStepProps) => {
   const totalTime = getDelay(props.step) / props.speed;
   const chunkDelay = Math.floor(totalTime / chunks.length);
   return <StepOutline {...props} className='current-step'>
-    {thoughts ? <TextStream chunks={thoughts.split('')} chunkDelay={chunkDelay} /> : 'No thoughts'}
+    <div class="thoughts">
+      {thoughts ?
+        <TextStream
+          chunks={thoughts.split('')}
+          chunkDelay={chunkDelay}
+          afterRender={props.afterRender} /> :
+        'No thoughts'}
+    </div>
   </StepOutline>
 });
 
 
-
-const LEFT_PANEL_EVENTS = 4;
-
 export const EventsPanel = () => {
   const { steps, models, playback } = useContext(StreamContext);
   const [expandedSteps, setExpandedSteps] = useState(new Set<number>());
-  const latestSteps = steps.slice(-LEFT_PANEL_EVENTS);
-  const currentStep = latestSteps.pop() ?? [];
+  const stepsContainer = useRef<HTMLDivElement | null>();
+  const currentStep = steps[steps.length - 1] ?? [];
   const currentStepAction = getActiveModelStep(currentStep);
   const currentModelIndex = models.findIndex((model) => model.id === currentStepAction?.modelId);
   const currentModel = models[currentModelIndex];
@@ -95,15 +99,26 @@ export const EventsPanel = () => {
 
   const isDone = currentStep.every((action) => action.status === 'DONE');
 
+  // Ensure the left panel scrolls as thoughts are rendered.
+  function maybeScroll() {
+    const scrollContainer = stepsContainer.current;
+    if (!scrollContainer) return;
+    const lineHeight = parseFloat(getComputedStyle(scrollContainer)?.lineHeight);
+    const atBottom = scrollContainer.scrollTop + scrollContainer.offsetHeight + lineHeight >= scrollContainer.scrollHeight;
+    if (atBottom) {
+      scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.offsetHeight;
+    }
+  }
+
   return (
     <div className="events-panel">
-      <div className="steps">
+      <div className="steps" ref={stepsContainer}>
 
         {
-          latestSteps.map((step, index) => {
+          steps.map((step, index) => {
             const activeModelStep = getActiveModelStep(step ?? []);
             if (!activeModelStep) return <></>;
-            const stepIndex = (steps.length - LEFT_PANEL_EVENTS) + index + 1;
+            const stepIndex = index + 1;
             const modelId = activeModelStep.modelId;
             const modelIndex = models.findIndex((model) => model.id === modelId);
             const model = models[modelIndex];
@@ -122,6 +137,7 @@ export const EventsPanel = () => {
           model={currentModel}
           stepIndex={steps.length}
           speed={playback.speed}
+          afterRender={maybeScroll}
           playerNumber={currentModelIndex + 1} />
       </div>
 

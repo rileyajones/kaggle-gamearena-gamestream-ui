@@ -39,7 +39,7 @@
     column-gap: var(--spacing-m);
   }
 
-  .thoughts {
+  .previous-steps-content .thoughts {
     transition: max-height 0.4s ease-in-out;
     visibility: hidden;
     max-height: 0;
@@ -65,6 +65,7 @@
 
 .steps {
   flex: 1;
+  overflow-y: auto;
   padding: var(--spacing-l);
 }
 

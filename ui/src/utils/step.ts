@@ -2,7 +2,7 @@ import { Step, StepAction, StepActionObject } from "../context/types";
 
 export function getThoughts(step: Step) {
   if (isActionObject(step.action)) {
-    return step.action.thoughts;
+    return step.action.thoughts ?? '';
   }
   // DO_NOT_SUBMIT this is a placeholder.
   return 'Model is thinking';

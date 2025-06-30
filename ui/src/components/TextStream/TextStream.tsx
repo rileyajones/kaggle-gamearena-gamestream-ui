@@ -1,14 +1,16 @@
 import { useEffect, useState } from "preact/hooks";
 import { streamString } from "../../context/utils";
+import { memo } from 'preact/compat';
 
 interface TextStreamProps {
   chunkDelay?: number;
   chunks: string[];
+  afterRender?: () => void;
 }
 
 const textStreams: AbortController[] = [];
 
-export const TextStream = (props: TextStreamProps) => {
+export const TextStream = memo((props: TextStreamProps) => {
   const [text, setText] = useState('')
 
   useEffect(() => {
@@ -24,10 +26,11 @@ export const TextStream = (props: TextStreamProps) => {
           return;
         }
         setText(nextText);
+        props.afterRender?.();
       }
     })();
 
-  }, [props.chunks]);
+  }, [props.chunks.join('')]);
 
   return <>{text}</>;
-}
+});
