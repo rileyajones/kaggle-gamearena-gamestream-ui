@@ -8,7 +8,8 @@ import { ModelIcon } from '../ModelIcon/ModelIcon';
 import './style.scss';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
-import { getActiveModelStep, getThoughts } from '../../utils/step';
+import { getActiveModelStep, getDelay, getThoughts } from '../../utils/step';
+import { DEFAULT_STEP_DELAY } from '../../consts';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -52,12 +53,16 @@ const PreviousStep = (props: PreviousStepProps) => {
 
 interface CurrentStepProps extends StepOutlineProps {
   step: Step;
+  speed: number;
 }
 
 const CurrentStep = memo((props: CurrentStepProps) => {
   const thoughts = getThoughts(props.step);
+  const chunks = thoughts.split('');
+  const totalTime = getDelay(props.step) / props.speed;
+  const chunkDelay = Math.floor(totalTime / chunks.length);
   return <StepOutline {...props} className='current-step'>
-    {thoughts ? <TextStream chunks={thoughts.split('')} /> : 'No thoughts'}
+    {thoughts ? <TextStream chunks={thoughts.split('')} chunkDelay={chunkDelay} /> : 'No thoughts'}
   </StepOutline>
 });
 
@@ -116,6 +121,7 @@ export const EventsPanel = () => {
           step={currentStepAction}
           model={currentModel}
           stepIndex={steps.length}
+          speed={playback.speed}
           playerNumber={currentModelIndex + 1} />
       </div>
 

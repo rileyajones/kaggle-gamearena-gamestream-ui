@@ -2,7 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { streamString } from "../../context/utils";
 
 interface TextStreamProps {
-  speed?: number;
+  chunkDelay?: number;
   chunks: string[];
 }
 
@@ -19,7 +19,7 @@ export const TextStream = (props: TextStreamProps) => {
       }
       const abortController = new AbortController();
       textStreams.push(abortController);
-      for await (const nextText of streamString(props.chunks, { abortController, speed: props.speed })) {
+      for await (const nextText of streamString(props.chunks, { abortController, chunkDelay: props.chunkDelay })) {
         if (abortController.signal.aborted) {
           return;
         }

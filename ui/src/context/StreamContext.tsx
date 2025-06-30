@@ -4,6 +4,8 @@ import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
 import { estimateIcon } from "../utils/models";
+import { DEFAULT_STEP_DELAY } from "../consts";
+import { getDelay } from "../utils/step";
 
 /** The interface definition of the StreamContext */
 export interface StreamContextI {
@@ -111,7 +113,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const controller = new AbortController();
       stepStreams.push(controller);
       for (let i = playback.currentStep; i <= episode.steps.length; i++) {
-        const timeTaken = episode.steps[i].find((action) => action.info.timeTaken)?.info.timeTaken ?? 500;
+        const step = episode.steps[i].find((action) => action.info.timeTaken);
+        const timeTaken = step ? getDelay(step) : 0;
         await sleep(timeTaken / playback.speed);
         nextSteps = episode.steps.slice(0, i).map((step) => {
           return step.map((actions, index) => {

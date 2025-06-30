@@ -38,13 +38,13 @@ export function sleep(ms: number) {
 }
 
 /** Simulates text streaming in */
-export async function* streamString(chunks: string[], options?: { abortController: AbortController, speed?: number }) {
+export async function* streamString(chunks: string[], options?: { abortController: AbortController, chunkDelay?: number }) {
     let buffer = '';
     for (const chunk of chunks) {
         if (options.abortController?.signal.aborted) {
             return;
         }
-        await sleep(options?.speed ?? 10);
+        await sleep(options?.chunkDelay ?? 10);
         buffer += chunk;
         yield buffer;
     }

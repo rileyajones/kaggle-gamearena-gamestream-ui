@@ -30,3 +30,7 @@ export function hasAction({action}: Step) {
 export function getActiveModelStep(steps: Step[]) {
   return steps.find(hasAction);
 }
+
+export function getDelay(step: Step) {
+  return step.info?.timeTaken ?? 500;
+}
