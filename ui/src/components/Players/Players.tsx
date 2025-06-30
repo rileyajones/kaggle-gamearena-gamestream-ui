@@ -12,7 +12,7 @@ export const Players = () => {
         <li key={model.id} className={classNames(model.id === currentModelId && 'active')}>
           {model.icon && <ModelIcon model={model} retro={true} />}
           <div className="text">
-            <div className="name">
+            <div className="name" data-tooltip={model.name}>
               {model.name}
             </div>
             {

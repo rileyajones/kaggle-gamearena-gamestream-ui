@@ -25,6 +25,7 @@
     flex: 1;
     gap: var(--spacing-m);
     height: 5em;
+    min-width: 0;
     padding: var(--spacing-l);
 
     &::has(:nth-child(2)) {
@@ -34,6 +35,8 @@
 
   .name {
     line-height: 1.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-wrap: nowrap;
   }
 
@@ -49,6 +52,7 @@
 
   .text {
     flex: 1;
+    min-width: 0;
   }
 
 
