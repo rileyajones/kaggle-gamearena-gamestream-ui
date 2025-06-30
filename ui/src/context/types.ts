@@ -132,6 +132,7 @@ export interface Episode {
 };
 
 export interface StepActionObject {
+    submission?: number;
     actionString?: string;
     thoughts?: string;
 }

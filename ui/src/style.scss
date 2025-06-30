@@ -1,4 +1,4 @@
-@import './styles/breakpoints';
+@use './styles/breakpoints' as breakpoints;
 
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -23,10 +23,10 @@
   --spacing-xxl: 2rem;
 
   /* Max Widths */
-  --screen-xs: $screen-xs;
-  --screen-s: $screen-s;
-  --screen-m: $screen-m;
-  --screen-l: $screen-l;
+  --screen-xs: breakpoints.$screen-xs;
+  --screen-s: breakpoints.$screen-s;
+  --screen-m: breakpoints.$screen-m;
+  --screen-l: breakpoints.$screen-l;
 
   --surface-color: #222;
   --surface-color-variant: #616161;

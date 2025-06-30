@@ -1,4 +1,4 @@
-@import '../../styles/breakpoints';
+@use '../../styles/breakpoints' as breakpoints;
 
 .home {
   display: grid;
@@ -9,11 +9,11 @@
   gap: var(--spacing-xxl);
   height: 100%;
 
-  @media (max-width: $screen-s) {
+  @media (max-width: breakpoints.$screen-s) {
     gap: var(--spacing-m);
   }
 
-  @media (max-width: $screen-m) {
+  @media (max-width: breakpoints.$screen-m) {
     gap: var(--spacing-l);
   }
 
@@ -40,15 +40,15 @@
     gap: var(--spacing-l);
     transition: width ease-in-out 0.25s;
 
-    @media (max-width: $screen-m) {
+    @media (max-width: breakpoints.$screen-m) {
       width: 20rem;
     }
 
-    @media (max-width: $screen-s) {
+    @media (max-width: breakpoints.$screen-s) {
       width: 10rem;
     }
 
-    @media (max-width: $screen-xs) {
+    @media (max-width: breakpoints.$screen-xs) {
       display: none;
     }
   }
