@@ -32,6 +32,11 @@ export interface Episode {
         runTimeout: number;
         seed: number;
     };
+    metadata?: {
+      stage?: string;
+      white?: string;
+      black?: string;
+    };
     description: string;
     id: string;
     info: {
