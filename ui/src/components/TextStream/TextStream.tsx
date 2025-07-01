@@ -1,11 +1,12 @@
 import { useEffect, useState } from "preact/hooks";
 import { streamString } from "../../context/utils";
-import { memo } from 'preact/compat';
+import { memo, PropsWithChildren } from 'preact/compat';
 
 interface TextStreamProps {
   chunkDelay?: number;
   chunks: string[];
   afterRender?: () => void;
+  children?: (str: string) => PropsWithChildren['children'];
 }
 
 const textStreams: AbortController[] = [];
@@ -32,5 +33,5 @@ export const TextStream = memo((props: TextStreamProps) => {
 
   }, [props.chunks.join('')]);
 
-  return <>{text}</>;
+  return props.children?.(text) ?? text;
 });

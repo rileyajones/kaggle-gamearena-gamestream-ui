@@ -1,4 +1,4 @@
-@import '../../styles/breakpoints';
+@use '../../styles/breakpoints' as breakpoints;
 
 .players-list {
   align-items: center;
@@ -56,11 +56,11 @@
   }
 
 
-  @media (max-width: $screen-s) {
+  @media (max-width: breakpoints.$screen-s) {
     flex-direction: column;
   }
 
-  @media (max-width: $screen-m) {
+  @media (max-width: breakpoints.$screen-m) {
 
     li {
       gap: var(--spacing-s);

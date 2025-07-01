@@ -29,6 +29,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--spacing-m);
+    position: relative;
   }
 
   .left-panel {
@@ -36,16 +37,27 @@
     flex-direction: column;
     grid-area: left-panel;
     width: 26rem;
-    overflow: hidden;
     gap: var(--spacing-l);
     transition: width ease-in-out 0.25s;
 
+    &.expanded {
+      width: 40em;
+    }
+
     @media (max-width: breakpoints.$screen-m) {
       width: 20rem;
+
+      &.expanded {
+        width: 30em;
+      }
     }
 
     @media (max-width: breakpoints.$screen-s) {
       width: 10rem;
+
+      &.expanded {
+        width: 15em;
+      }
     }
 
     @media (max-width: breakpoints.$screen-xs) {
@@ -53,4 +65,13 @@
     }
   }
 
+  .left-panel-expander {
+    position: absolute;
+    top: 50%;
+    left: -2.25em;
+
+    @media (max-width: breakpoints.$screen-m) {
+      left: -2em;
+    }
+  }
 }

@@ -9,7 +9,8 @@
 	"author": "Riley Jones",
 	"dependencies": {
 		"preact": "^10.25.3",
-		"preact-iso": "^2.9.2"
+		"preact-iso": "^2.9.2",
+		"react-markdown": "^10.1.0"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "^2.9.3",

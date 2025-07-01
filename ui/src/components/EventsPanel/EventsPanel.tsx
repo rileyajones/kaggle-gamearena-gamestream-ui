@@ -5,10 +5,11 @@ import { PropsWithChildren, memo } from 'preact/compat';
 import { classNames } from '../../utils/classnames';
 import { AgentResponding } from './AgentResponding';
 import { ModelIcon } from '../ModelIcon/ModelIcon';
-import './style.scss';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
 import { getActiveModelStep, getDelay, getThoughts } from '../../utils/step';
+import Markdown from 'react-markdown';
+import './style.scss';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -44,7 +45,11 @@ const PreviousStep = (props: PreviousStepProps) => {
   return <StepOutline {...props}>
     <div className="previous-steps-content">
       <Move step={props.step} />
-      <div class="thoughts">{getThoughts(props.step)}</div>
+      <div class="thoughts">
+        <Markdown>
+          {getThoughts(props.step)}
+        </Markdown>
+      </div>
     </div>
   </StepOutline>;
 }
@@ -67,7 +72,13 @@ const CurrentStep = memo((props: CurrentStepProps) => {
         <TextStream
           chunks={thoughts.split('')}
           chunkDelay={chunkDelay}
-          afterRender={props.afterRender} /> :
+          afterRender={props.afterRender}>
+          {(str) =>
+            <Markdown>
+              {str}
+            </Markdown>
+          }
+        </TextStream> :
         'No thoughts'}
     </div>
   </StepOutline>
@@ -113,7 +124,6 @@ export const EventsPanel = () => {
   return (
     <div className="events-panel">
       <div className="steps" ref={stepsContainer}>
-
         {
           steps.map((step, index) => {
             const activeModelStep = getActiveModelStep(step ?? []);

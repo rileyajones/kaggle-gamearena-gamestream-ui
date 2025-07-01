@@ -4,6 +4,7 @@ import './style.css';
 
 interface IconButtonProps extends PropsWithChildren {
   onClick?: () => void;
+  className?: string;
   disabled?: boolean;
 }
 
