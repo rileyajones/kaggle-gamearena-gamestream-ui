@@ -1,6 +1,7 @@
 .controls {
   display: flex;
   gap: var(--spacing-m);
+  justify-content: center;
 
   .speed-button {
     background: none;
