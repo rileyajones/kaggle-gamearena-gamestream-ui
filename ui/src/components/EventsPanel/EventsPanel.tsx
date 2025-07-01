@@ -8,6 +8,7 @@ import { ModelIcon } from '../ModelIcon/ModelIcon';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
 import { getActiveModelStep, getDelay, getThoughts } from '../../utils/step';
+import { IconButton } from '../IconButton/IconButton';
 import Markdown from 'react-markdown';
 import './style.scss';
 
@@ -16,9 +17,11 @@ interface StepOutlineProps extends PropsWithChildren {
   model: ModelMetadata;
   stepIndex: number;
   playerNumber: number;
+  currentStepIndex: number;
   className?: string;
   expanded?: boolean;
   onExpand?: () => void;
+  setAsCurrent?: () => void;
 }
 
 const StepOutline = (props: StepOutlineProps) => {
@@ -27,7 +30,7 @@ const StepOutline = (props: StepOutlineProps) => {
     onClick={props.onExpand}>
     <div className="metadata-section">
       <span className="metadata">{props.model.name}</span>
-      <span className="metadata">step {props.stepIndex}</span>
+      <span className="metadata">step {props.stepIndex + 1}</span>
       <span className="metadata">player {props.playerNumber}</span>
     </div>
     <div className="content">
@@ -35,6 +38,14 @@ const StepOutline = (props: StepOutlineProps) => {
         {props.model.icon ? <ModelIcon model={props.model} /> : props.model.name}
       </div>
       {props.children}
+
+      <IconButton
+        className={classNames('drill-down-btn', props.stepIndex === props.currentStepIndex && 'hidden')}
+        disabled={props.stepIndex === props.currentStepIndex}
+        tooltip="Show Move"
+        onClick={(event) => { event.stopPropagation(); props.setAsCurrent() }}>
+        output
+      </IconButton>
     </div>
   </div>
 }
@@ -67,7 +78,7 @@ const CurrentStep = memo((props: CurrentStepProps) => {
   const totalTime = getDelay(props.step) / props.speed;
   const chunkDelay = Math.floor(totalTime / chunks.length);
   return <StepOutline {...props} className='current-step'>
-    <div class="thoughts">
+    <div className="current-thoughts">
       {thoughts ?
         <TextStream
           chunks={thoughts.split('')}
@@ -86,7 +97,7 @@ const CurrentStep = memo((props: CurrentStepProps) => {
 
 
 export const EventsPanel = () => {
-  const { steps, models, playback } = useContext(StreamContext);
+  const { steps, models, playback, setPlayback } = useContext(StreamContext);
   const [expandedSteps, setExpandedSteps] = useState(new Set<number>());
   const stepsContainer = useRef<HTMLDivElement | null>();
   const currentStep = steps[steps.length - 1] ?? [];
@@ -121,6 +132,10 @@ export const EventsPanel = () => {
     }
   }
 
+  function setStep(index: number) {
+    setPlayback({ ...playback, currentStep: index, playing: false });
+  }
+
   return (
     <div className="events-panel">
       <div className="steps" ref={stepsContainer}>
@@ -128,7 +143,7 @@ export const EventsPanel = () => {
           steps.map((step, index) => {
             const activeModelStep = getActiveModelStep(step ?? []);
             if (!activeModelStep) return <></>;
-            const stepIndex = index + 1;
+            const stepIndex = index;
             const modelId = activeModelStep.modelId;
             const modelIndex = models.findIndex((model) => model.id === modelId);
             const model = models[modelIndex];
@@ -137,6 +152,8 @@ export const EventsPanel = () => {
               step={activeModelStep}
               model={model}
               stepIndex={stepIndex}
+              currentStepIndex={playback.currentStep}
+              setAsCurrent={() => setStep(stepIndex)}
               playerNumber={modelIndex + 1}
               expanded={expandedSteps.has(stepIndex)}
               onExpand={() => toggleStepExpandion(stepIndex)} />;
@@ -145,7 +162,9 @@ export const EventsPanel = () => {
         <CurrentStep
           step={currentStepAction}
           model={currentModel}
-          stepIndex={steps.length}
+          stepIndex={steps.length + 1}
+          setAsCurrent={() => setStep(steps.length + 1)}
+          currentStepIndex={playback.currentStep}
           speed={playback.speed}
           afterRender={maybeScroll}
           playerNumber={currentModelIndex + 1} />

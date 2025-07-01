@@ -20,7 +20,7 @@
 
   &.expanded {
     .thoughts {
-      max-height: 100rem;
+      max-height: 300rem;
       visibility: visible;
     }
   }
@@ -34,12 +34,26 @@
   }
 
   .content {
-    padding: var(--spacing-l) 0;
-    display: flex;
     column-gap: var(--spacing-m);
+    display: flex;
+    padding: var(--spacing-l) 0;
+    position: relative;
+
+    &:hover {
+      .drill-down-btn:not(.hidden) {
+        visibility: visible;
+      }
+    }
+
+    .drill-down-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      visibility: hidden;
+    }
   }
 
-  .previous-steps-content .thoughts {
+  .thoughts {
     transition: max-height 0.4s ease-in-out;
     visibility: hidden;
     max-height: 0;
@@ -88,6 +102,8 @@
 
 .previous-steps-content {
   display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
+  overflow: hidden;
 }

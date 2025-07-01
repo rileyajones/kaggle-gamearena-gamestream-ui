@@ -114,7 +114,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       stepStreams.push(controller);
       for (let i = playback.currentStep; i <= episode.steps.length; i++) {
         const step = episode.steps[i]?.find((action) => action.info.timeTaken);
-        const timeTaken = step ? getDelay(step) : 0;
+        const timeTaken = getDelay(step);
         await sleep(timeTaken / playback.speed);
         nextSteps = episode.steps.slice(0, i).map((step) => {
           return step.map((actions, index) => {
