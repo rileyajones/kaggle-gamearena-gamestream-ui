@@ -10,29 +10,31 @@ export const GameViewer = () => {
 
   const currentIframe = iframeRef?.current as HTMLIFrameElement | undefined;
   const fullyInitialized = currentIframe && game.viewerUrl && loaded;
+  const isDone = steps[steps.length - 1]?.every((action) => action.status === 'DONE');
 
   useEffect(() => {
-    if (!fullyInitialized) return;
+    // Note that the viewer blanks out the board when the final step is "done"
+    if (!fullyInitialized || isDone) return;
     const windowKaggle = {
-        'debug': false,
-        'playing': false,
-        'loading': false,
-        'header': false,
-        'controls': false,
-        'mode': 'html',
-        'logs': [[]],
-        'step': playback.currentStep,
-        'environment': {
-          ...episode,
-          'rendererUrl': game.rendererUrl,
-          'viewer': 'gamestream',
-        },
+      'debug': false,
+      'playing': false,
+      'loading': false,
+      'header': false,
+      'controls': false,
+      'mode': 'html',
+      'logs': [[]],
+      'step': playback.currentStep,
+      'environment': {
+        ...episode,
+        'rendererUrl': game.rendererUrl,
+        'viewer': 'gamestream',
+      },
     };
 
     currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
     // Waiting a couple milliseconds for the frame to rerender.
     setTimeout(() => {
-        currentIframe.contentWindow.postMessage({ setSteps: steps }, game.viewerUrl);
+      currentIframe.contentWindow.postMessage({ setSteps: steps }, game.viewerUrl);
     }, 200);
   }, [fullyInitialized, playback, steps]);
 
@@ -46,15 +48,15 @@ export const GameViewer = () => {
   }
 
   return (
-      <div className={classNames('game-viewer', !fullyInitialized && 'hidden')}>
-        <div className="playback-banner">
-          <span className="material-icons">info</span>
-          You're watching a replay of the match simulation, running at {playback.speed}x speed.
-        </div>
-        <iframe
-          ref={iframeRef}
-          src={game.viewerUrl}
-          onLoad={maybeSetLoaded}></iframe>
+    <div className={classNames('game-viewer', !fullyInitialized && 'hidden')}>
+      <div className="playback-banner">
+        <span className="material-icons">info</span>
+        You're watching a replay of the match simulation, running at {playback.speed}x speed.
       </div>
-    );
+      <iframe
+        ref={iframeRef}
+        src={game.viewerUrl}
+        onLoad={maybeSetLoaded}></iframe>
+    </div>
+  );
 }

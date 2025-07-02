@@ -4,8 +4,7 @@ export function getThoughts(step: Step) {
   if (isActionObject(step.action)) {
     return step.action.thoughts ?? '';
   }
-  // DO_NOT_SUBMIT this is a placeholder.
-  return 'Model is thinking';
+  return '';
 }
 
 export function isActionObject(action: StepAction): action is StepActionObject {
@@ -22,6 +21,9 @@ export function getActionString(step: Step) {
 
 export function hasAction({action}: Step) {
   if (isActionObject(action)) {
+    if (action.submission === -1) {
+      return false;
+    }
     return action.actionString !== '' || action.thoughts !== '';
   }
   return action !== '';

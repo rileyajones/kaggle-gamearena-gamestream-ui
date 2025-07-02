@@ -125,8 +125,10 @@ export const EventsPanel = () => {
   function maybeScroll() {
     const scrollContainer = stepsContainer.current;
     if (!scrollContainer) return;
-    const lineHeight = parseFloat(getComputedStyle(scrollContainer)?.lineHeight);
-    const atBottom = scrollContainer.scrollTop + scrollContainer.offsetHeight + lineHeight >= scrollContainer.scrollHeight;
+    const estimatedElementHeight = 100;
+    const atBottom = scrollContainer.scrollTop +
+      scrollContainer.offsetHeight +
+      estimatedElementHeight >= scrollContainer.scrollHeight;
     if (atBottom) {
       scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.offsetHeight;
     }

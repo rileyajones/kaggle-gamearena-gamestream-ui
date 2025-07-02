@@ -27,11 +27,12 @@ export const TextStream = memo((props: TextStreamProps) => {
           return;
         }
         setText(nextText);
-        props.afterRender?.();
       }
     })();
 
   }, [props.chunks.join('')]);
 
+  // Ensure the afterRender function is pushed to the end of the stack.
+  setTimeout(() => props.afterRender?.());
   return props.children?.(text) ?? text;
 });
