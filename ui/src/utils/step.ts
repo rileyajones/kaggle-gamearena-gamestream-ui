@@ -32,5 +32,6 @@ export function getActiveModelStep(steps: Step[]) {
 }
 
 export function getDelay(step: Step|undefined) {
-  return step?.info?.timeTaken ?? 500;
+  const secondsTaken = step?.info?.timeTaken; 
+  return secondsTaken ?  secondsTaken * 1000 : 500;
 }
