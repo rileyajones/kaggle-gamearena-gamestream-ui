@@ -15,12 +15,12 @@ export function Home() {
 
   return (
     <div className="home">
+      <div className="title">
+        <StreamTitle />
+      </div>
       <div className={classNames('left-panel', leftPanelExpanded && 'expanded')}>
         <Players />
         <EventsPanel />
-      </div>
-      <div className="title">
-        <StreamTitle />
       </div>
       <div className="viewer">
         <GameViewer />

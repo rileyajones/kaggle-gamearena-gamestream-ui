@@ -86,7 +86,7 @@ const CurrentStep = memo((props: CurrentStepProps) => {
           afterRender={props.afterRender}>
           {(str) =>
             <Markdown>
-              {str}
+              {str + ' '}
             </Markdown>
           }
         </TextStream> :
@@ -100,7 +100,8 @@ export const EventsPanel = () => {
   const { steps, models, playback, setPlayback } = useContext(StreamContext);
   const [expandedSteps, setExpandedSteps] = useState(new Set<number>());
   const stepsContainer = useRef<HTMLDivElement | null>();
-  const currentStep = steps[steps.length - 1] ?? [];
+  const previousSteps = [...steps];
+  const currentStep = previousSteps.pop() ?? [];
   const currentStepAction = getActiveModelStep(currentStep);
   const currentModelIndex = models.findIndex((model) => model.id === currentStepAction?.modelId);
   const currentModel = models[currentModelIndex];
@@ -142,7 +143,7 @@ export const EventsPanel = () => {
     <div className="events-panel">
       <div className="steps" ref={stepsContainer}>
         {
-          steps.map((step, index) => {
+          previousSteps.map((step, index) => {
             const activeModelStep = getActiveModelStep(step ?? []);
             if (!activeModelStep) return <></>;
             const stepIndex = index;
@@ -164,8 +165,8 @@ export const EventsPanel = () => {
         <CurrentStep
           step={currentStepAction}
           model={currentModel}
-          stepIndex={steps.length + 1}
-          setAsCurrent={() => setStep(steps.length + 1)}
+          stepIndex={steps.length}
+          setAsCurrent={() => setStep(steps.length)}
           currentStepIndex={playback.currentStep}
           speed={playback.speed}
           afterRender={maybeScroll}

@@ -4,7 +4,7 @@ import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
 import { estimateIcon } from "../utils/models";
-import { getDelay } from "../utils/step";
+import { getDelay, hasAction } from "../utils/step";
 import { getEpisodePlayerPath } from "../utils/games";
 
 /** The interface definition of the StreamContext */
@@ -112,11 +112,11 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       if (!episode || !playback.playing) return;
       const controller = new AbortController();
       stepStreams.push(controller);
-      for (let i = playback.currentStep; i <= episode.steps.length; i++) {
-        const step = episode.steps[i]?.find((action) => action.info.timeTaken);
+      const allSteps = episode.steps.filter((actions) => actions.some(hasAction))
+      for (let i = playback.currentStep; i <= allSteps.length; i++) {
+        const step = allSteps[i]?.find((action) => action.info.timeTaken);
         const timeTaken = getDelay(step);
-        await sleep(timeTaken / playback.speed);
-        nextSteps = episode.steps.slice(0, i).map((step) => {
+        nextSteps = allSteps.slice(0, i).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
             return {
@@ -133,6 +133,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
           ...playback,
           currentStep: i,
         });
+        await sleep(timeTaken / playback.speed);
       }
     })();
   }, [playback.playing, playback.speed, episode])
