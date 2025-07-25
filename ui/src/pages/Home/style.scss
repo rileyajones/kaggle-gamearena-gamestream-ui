@@ -8,6 +8,7 @@
   grid-template-rows: auto 1fr;
   gap: var(--spacing-xxl);
   height: 100%;
+  font-size: 20px;
 
   @media (max-width: breakpoints.$screen-s) {
     gap: var(--spacing-m);
@@ -37,7 +38,7 @@
     flex-direction: column;
     grid-area: left-panel;
     overflow: hidden;
-    width: 26rem;
+    width: 30em;
     gap: var(--spacing-l);
     transition: width ease-in-out 0.25s;
 
@@ -46,7 +47,7 @@
     }
 
     @media (max-width: breakpoints.$screen-m) {
-      width: 20rem;
+      width: 20em;
 
       &.expanded {
         width: 30em;
@@ -54,7 +55,7 @@
     }
 
     @media (max-width: breakpoints.$screen-s) {
-      width: 10rem;
+      width: 10em;
 
       &.expanded {
         width: 15em;

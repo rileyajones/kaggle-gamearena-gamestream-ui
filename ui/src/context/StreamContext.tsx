@@ -38,6 +38,7 @@ const defaultStreamContext: StreamContextI = {
     playing: false,
     currentStep: 0,
     speed: 1,
+    alwaysScroll: false,
   },
   steps: [],
   currentModelId: '',
@@ -77,13 +78,14 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const episodeId = params.get('episodeId');
   const episodeFile = params.get('episodeFile');
   const showControls = params.has('showControls');
+  const alwaysScroll = params.has('alwaysScroll');
+  const autoPlay = params.has('autoPlay');
 
 
   useEffect(() => {
-    if (!showControls) {
-      setPlayback({ ...playback, playing: true });
-    }
-  }, [showControls]);
+    const playing = !showControls || autoPlay;
+    setPlayback({ ...playback, playing, alwaysScroll });
+  }, [showControls, alwaysScroll]);
 
   useEffect(() => {
     if (!episodeId && !episodeFile) return;

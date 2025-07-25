@@ -130,7 +130,7 @@ export const EventsPanel = () => {
     const atBottom = scrollContainer.scrollTop +
       scrollContainer.offsetHeight +
       estimatedElementHeight >= scrollContainer.scrollHeight;
-    if (atBottom) {
+    if (atBottom || playback.alwaysScroll) {
       scrollContainer.scrollTop = scrollContainer.scrollHeight - scrollContainer.offsetHeight;
     }
   }

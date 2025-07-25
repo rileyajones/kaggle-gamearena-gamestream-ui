@@ -88,6 +88,10 @@
   padding: var(--spacing-m) var(--spacing-l);
 }
 
+.current-step .step-outline .content {
+  flex-direction: column;
+}
+
 .current-step .model {
   align-self: start;
 }
