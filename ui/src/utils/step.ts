@@ -19,12 +19,18 @@ export function getActionString(step: Step) {
   return step.action;
 }
 
+export function isSetup(actions: Step[]) {
+  return actions.every(({action}) => {
+    if (isActionObject(action)) {
+      return action.submission === -1;
+    }
+    return action == '-1';
+  });
+}
+
 export function hasAction({action}: Step) {
   if (isActionObject(action)) {
-    if (action.submission === -1) {
-      return false;
-    }
-    return action.actionString !== '' || action.thoughts !== '';
+    return action.actionString || action.thoughts;
   }
   return action !== '';
 }

@@ -104,10 +104,16 @@ export const EventsPanel = () => {
   const currentModelIndex = models.findIndex((model) => model.id === currentStepAction?.modelId);
   const currentModel = models[currentModelIndex];
 
-  if (!currentStepAction || !currentModel) {
+  if (!steps.length) {
     return <div className="events-panel empty">
       <img src={staticFilePath("empty_start.svg")} />
       No steps have been taken yet
+    </div>;
+  }
+
+  if (!currentStepAction || !currentModel) {
+    return <div className="events-panel empty">
+      Could not interpret the current step
     </div>;
   }
 
