@@ -28,6 +28,8 @@ function renderer(options) {
     let currentMessageBoxElement = typeof document !== 'undefined' ? document.getElementById('messageBox') : null;
     let currentRendererContainer = null;
     let currentTitleElement = null;
+    let whitePlayerDisplay = null;
+    let blackPlayerDisplay = null;
     let squareSize = 50;
 
     function _showMessage(message, type = 'info', duration = 3000) {
@@ -68,7 +70,6 @@ function renderer(options) {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            padding: '20px',
             boxSizing: 'border-box',
             width: '100%',
             height: '100%',
@@ -89,6 +90,23 @@ function renderer(options) {
           currentRendererContainer.appendChild(currentTitleElement);
         }
         parentElementToClear.appendChild(currentRendererContainer);
+
+        // Create the player name displays
+        const [blackName, whiteName] = options.environment.info.TeamNames;
+        blackPlayerDisplay = document.createElement('div');
+        whitePlayerDisplay = document.createElement('div');
+        blackPlayerDisplay.innerText = blackName;
+        whitePlayerDisplay.innerText = whiteName;
+
+        const playerNameStyles = {
+          color: 'white',
+          padding: '20px',
+          fontSize: '20px',
+        };
+        Object.assign(blackPlayerDisplay.style, playerNameStyles);
+        Object.assign(whitePlayerDisplay.style, playerNameStyles);
+
+        currentRendererContainer.appendChild(blackPlayerDisplay);
 
         const smallestParentEdge = Math.min(currentRendererContainer.offsetWidth, currentRendererContainer.offsetHeight);
         squareSize = Math.floor(smallestParentEdge / DEFAULT_NUM_COLS);
@@ -119,6 +137,9 @@ function renderer(options) {
         }
         currentRendererContainer.appendChild(currentBoardElement);
 
+        // Show the name of the white player at the bottom of the board.
+        currentRendererContainer.appendChild(whitePlayerDisplay);
+
         const statusContainer = document.createElement('div');
         // Identical styling to the Connect Four renderer's status container
         Object.assign(statusContainer.style, {
@@ -130,7 +151,6 @@ function renderer(options) {
             width: 'auto',
             minWidth: '200px',
             maxWidth: '90vw',
-            marginTop: '20px'
         });
         if (!environment.viewer) {
           currentRendererContainer.appendChild(statusContainer);
@@ -208,7 +228,6 @@ function renderer(options) {
             currentWinnerTextElement.textContent = "";
             return;
         }
-
 
         const { board, activeColor, isTerminal, winner } = gameStateToDisplay;
 
