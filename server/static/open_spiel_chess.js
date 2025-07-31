@@ -102,6 +102,7 @@ function renderer(options) {
           color: 'white',
           padding: '20px',
           fontSize: '20px',
+          fontFamily: 'Inter, system-ui, Avenir, Helvetica, Arial, sans-serif',
         };
         Object.assign(blackPlayerDisplay.style, playerNameStyles);
         Object.assign(whitePlayerDisplay.style, playerNameStyles);
