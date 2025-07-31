@@ -84,6 +84,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const textSpeed = params.has('textSpeed') ?
     Number.parseInt(params.get('textSpeed')) :
     defaultStreamContext.playback.textSpeed;
+  const turnTimeOverride = params.has('turnTimeOverride') ?
+    Number.parseInt(params.get('turnTimeOverride')) :
+    undefined;
 
 
   useEffect(() => {
@@ -121,7 +124,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const allSteps = episode.steps.filter((actions) => actions.some(hasAction))
       for (let i = playback.currentStep; i <= allSteps.length; i++) {
         const step = allSteps[i]?.find((action) => action.info.timeTaken);
-        const timeTaken = getDelay(step);
+        const timeTaken = turnTimeOverride ?? getDelay(step);
         nextSteps = allSteps.slice(0, i).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
