@@ -7,10 +7,11 @@ import { AgentResponding } from './AgentResponding';
 import { ModelIcon } from '../ModelIcon/ModelIcon';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
-import { getActiveModelStep, getDelay, getThoughts } from '../../utils/step';
+import { getActiveModelStep, getThoughts } from '../../utils/step';
 import { IconButton } from '../IconButton/IconButton';
 import Markdown from 'react-markdown';
 import './style.scss';
+import { staticFilePath } from '../../utils/backend';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -104,7 +105,10 @@ export const EventsPanel = () => {
   const currentModel = models[currentModelIndex];
 
   if (!currentStepAction || !currentModel) {
-    return <div className="events-panel empty">No steps have been taken yet</div>;
+    return <div className="events-panel empty">
+      <img src={staticFilePath("empty_start.svg")} />
+      No steps have been taken yet
+    </div>;
   }
 
   function toggleStepExpandion(index: number) {

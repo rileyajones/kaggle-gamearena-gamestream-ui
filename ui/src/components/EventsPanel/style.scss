@@ -9,9 +9,14 @@
   &.empty {
     align-items: center;
     font-size: 1.25em;
+    gap: var(--spacing-l);
     padding: var(--spacing-m);
     justify-content: center;
     text-align: center;
+
+    img {
+      width: 13rem;
+    }
   }
 }
 
