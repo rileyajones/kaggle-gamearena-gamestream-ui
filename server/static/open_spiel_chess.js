@@ -30,7 +30,7 @@ function renderer(options) {
     let currentTitleElement = null;
     let whitePlayerDisplay = null;
     let blackPlayerDisplay = null;
-    let squareSize = 50;
+    let resizeObserver = null;
 
     function _showMessage(message, type = 'info', duration = 3000) {
         if (typeof document === 'undefined' || !document.body) return;
@@ -73,7 +73,7 @@ function renderer(options) {
             boxSizing: 'border-box',
             width: '100%',
             height: '100%',
-            fontFamily: "'Inter', sans-serif"
+            fontFamily: "'Inter', sans-serif",
         });
 
         if (!environment.viewer) {
@@ -108,26 +108,39 @@ function renderer(options) {
         Object.assign(whitePlayerDisplay.style, playerNameStyles);
 
         currentRendererContainer.appendChild(blackPlayerDisplay);
-
-        const smallestParentEdge = Math.min(currentRendererContainer.offsetWidth, currentRendererContainer.offsetHeight);
-        squareSize = Math.floor(smallestParentEdge / DEFAULT_NUM_COLS);
+        const boardContainer = document.createElement('div');
+        Object.assign(boardContainer.style, {
+          overflow: 'hidden',
+          width: '100%',
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        });
         currentBoardElement = document.createElement('div');
         Object.assign(currentBoardElement.style, {
             display: 'grid',
-            gridTemplateColumns: `repeat(${cols}, ${squareSize}px)`,
-            gridTemplateRows: `repeat(${rows}, ${squareSize}px)`,
-            width: `${cols * squareSize}px`,
-            height: `${rows * squareSize}px`,
+            gridTemplateColumns: `repeat(${cols}, var(--square-size))`,
+            gridTemplateRows: `repeat(${rows}, var(--square-size))`,
             border: '2px solid #333'
         });
+
+        if (resizeObserver) {
+          resizeObserver.disconnect();
+        }
+        boardContainer.style.setProperty('--square-size', `${100/DEFAULT_NUM_COLS}%`);
+        resizeObserver = new ResizeObserver(() => {
+          const {width, height} = boardContainer.getBoundingClientRect();
+          const minSide = Math.min(width, height);
+          boardContainer.style.setProperty('--square-size', `${minSide/DEFAULT_NUM_COLS}px`);
+        });
+        resizeObserver.observe(boardContainer)
 
         for (let r = 0; r < rows; r++) {
             for (let c = 0; c < cols; c++) {
                 const square = document.createElement('div');
                 square.id = `cell-${r}-${c}`;
                 Object.assign(square.style, {
-                    width: `${squareSize}px`,
-                    height: `${squareSize}px`,
                     backgroundColor: (r + c) % 2 === 0 ? LIGHT_SQUARE_COLOR : DARK_SQUARE_COLOR,
                     display: 'flex',
                     alignItems: 'center',
@@ -136,7 +149,8 @@ function renderer(options) {
                 currentBoardElement.appendChild(square);
             }
         }
-        currentRendererContainer.appendChild(currentBoardElement);
+        boardContainer.appendChild(currentBoardElement);
+        currentRendererContainer.appendChild(boardContainer);
 
         // Show the name of the white player at the bottom of the board.
         currentRendererContainer.appendChild(whitePlayerDisplay);
@@ -232,7 +246,6 @@ function renderer(options) {
 
         const { board, activeColor, isTerminal, winner } = gameStateToDisplay;
 
-        const pieceSize = Math.floor(squareSize * 0.9);
         for (let r_data = 0; r_data < displayRows; r_data++) {
             for (let c_data = 0; c_data < displayCols; c_data++) {
                 const piece = board[r_data][c_data];
@@ -240,8 +253,8 @@ function renderer(options) {
                 if (squareElement && piece) {
                     const pieceImg = document.createElement('img');
                     pieceImg.src = PIECE_SVG_URLS[piece];
-                    pieceImg.style.width = `${pieceSize}px`;
-                    pieceImg.style.height = `${pieceSize}px`;
+                    pieceImg.style.width = `90%`;
+                    pieceImg.style.height = `90%`;
                     squareElement.appendChild(pieceImg);
                 }
             }
