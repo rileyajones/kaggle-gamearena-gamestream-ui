@@ -68,21 +68,18 @@ const PreviousStep = (props: PreviousStepProps) => {
 
 interface CurrentStepProps extends StepOutlineProps {
   step: Step;
-  speed: number;
+  textSpeed: number;
   afterRender?: () => void;
 }
 
 const CurrentStep = memo((props: CurrentStepProps) => {
   const thoughts = getThoughts(props.step);
-  const chunks = thoughts.split('');
-  const totalTime = getDelay(props.step) / props.speed;
-  const chunkDelay = Math.floor(totalTime / chunks.length);
   return <StepOutline {...props} className='current-step'>
     <div className="current-thoughts">
       {thoughts ?
         <TextStream
           chunks={thoughts.split('')}
-          chunkDelay={chunkDelay}
+          chunkDelay={props.textSpeed}
           afterRender={props.afterRender}>
           {(str) =>
             <Markdown>
@@ -168,7 +165,7 @@ export const EventsPanel = () => {
           stepIndex={steps.length}
           setAsCurrent={() => setStep(steps.length)}
           currentStepIndex={playback.currentStep}
-          speed={playback.speed}
+          textSpeed={playback.textSpeed}
           afterRender={maybeScroll}
           playerNumber={currentModelIndex + 1} />
       </div>

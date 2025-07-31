@@ -38,6 +38,7 @@ const defaultStreamContext: StreamContextI = {
     playing: false,
     currentStep: 0,
     speed: 1,
+    textSpeed: 50,
     alwaysScroll: false,
   },
   steps: [],
@@ -80,12 +81,15 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const showControls = params.has('showControls');
   const alwaysScroll = params.has('alwaysScroll');
   const autoPlay = params.has('autoPlay');
+  const textSpeed = params.has('textSpeed') ?
+    Number.parseInt(params.get('textSpeed')) :
+    defaultStreamContext.playback.textSpeed;
 
 
   useEffect(() => {
     const playing = !showControls || autoPlay;
-    setPlayback({ ...playback, playing, alwaysScroll });
-  }, [showControls, alwaysScroll]);
+    setPlayback({ ...playback, playing, alwaysScroll, textSpeed });
+  }, [showControls, alwaysScroll, textSpeed]);
 
   useEffect(() => {
     if (!episodeId && !episodeFile) return;
