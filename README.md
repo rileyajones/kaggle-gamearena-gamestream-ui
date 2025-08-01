@@ -33,3 +33,17 @@ docker build -t kaggle/gamearena-stream-ui .
 ```console
 docker run -d -p 3001:3001 kaggle/gamearena-stream-ui
 ```
+
+## Query parameters
+
+`episodeId` can be set equal to any episode hosted by the Kaggle api in order to view that game.
+
+`episodeFile` can be set equal to a locally provided json file (stored in the server assets directory).
+
+`showControls` will cause the play/pause step and restart buttons to appear. If controls are not available th game will automatically start playing.
+
+`autoPlay` causes the game to automatically start playing (even if the controls are enabled)
+
+`textSpeed` specifies the delay (in ms) between characters being drawn in the events panel.
+
+`turnTimeOverride` sets all turns of the game to be the specified value (in ms).
