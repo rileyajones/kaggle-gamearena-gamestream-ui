@@ -6,12 +6,10 @@ import { streamString } from '../../context/utils';
 
 export const StreamTitle = memo(() => {
   const { episode } = useContext(StreamContext);
-  const title = episode?.title;
-  if (!title) return <></>;
 
   return (
     <>
-      <h1 className="stream-title">Game Arena - {title}</h1>
+      <h1 className="stream-title">Kaggle Game Arena</h1>
       <h2 className="sub-title" contentEditable={true} role="input">{episode.metadata?.stage}</h2>
     </>
   );
