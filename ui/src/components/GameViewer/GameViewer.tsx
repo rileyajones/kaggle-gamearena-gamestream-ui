@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "preact/hooks";
 import { StreamContext } from "../../context/StreamContext";
 import { classNames } from "../../utils/classnames";
 import './style.scss';
+import { GameOverModal } from "./GameOverModal";
 
 export const GameViewer = () => {
   const { steps, episode, game, playback } = useContext(StreamContext);
@@ -12,9 +13,12 @@ export const GameViewer = () => {
   const fullyInitialized = currentIframe && game.viewerUrl && loaded;
   const isDone = steps[steps.length - 1]?.every((action) => action.status === 'DONE');
 
+  const showGameCompleteBanner = isDone && playback.currentStep === steps.length;
+
+
   useEffect(() => {
     // Note that the viewer blanks out the board when the final step is "done"
-    if (!fullyInitialized || isDone) return;
+    if (!fullyInitialized) return;
     const windowKaggle = {
       'debug': false,
       'playing': false,
@@ -23,7 +27,8 @@ export const GameViewer = () => {
       'controls': false,
       'mode': 'html',
       'logs': [[]],
-      'step': playback.currentStep,
+      // Setup steps are removed from the stream ui steps, so we need to account for them here.
+      'step': playback.currentStep + playback.setupStepCount,
       'environment': {
         ...episode,
         'rendererUrl': game.rendererUrl,
@@ -34,7 +39,7 @@ export const GameViewer = () => {
     currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
     // Waiting a couple milliseconds for the frame to rerender.
     setTimeout(() => {
-      currentIframe.contentWindow.postMessage({ setSteps: steps }, game.viewerUrl);
+      currentIframe.contentWindow.postMessage({ setSteps: episode.steps }, game.viewerUrl);
     }, 200);
   }, [fullyInitialized, playback, steps]);
 
@@ -57,6 +62,7 @@ export const GameViewer = () => {
         ref={iframeRef}
         src={game.viewerUrl}
         onLoad={maybeSetLoaded}></iframe>
+      {showGameCompleteBanner && <GameOverModal />}
     </div>
   );
 }

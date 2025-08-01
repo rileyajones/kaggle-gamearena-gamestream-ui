@@ -12,9 +12,6 @@ export interface StreamContextI {
   models: ModelMetadata[];
   game: GameMetadata;
   episode: Episode | undefined;
-  gameState: {
-    step: number;
-  };
   playback: Playback;
   steps: Step[][];
   currentModelId: string;
@@ -31,12 +28,10 @@ const defaultStreamContext: StreamContextI = {
     matchTime: 0,
   },
   episode: undefined,
-  gameState: {
-    step: 0,
-  },
   playback: {
     playing: false,
     currentStep: 0,
+    setupStepCount: 0,
     speed: 1,
     textSpeed: 50,
     alwaysScroll: false,
@@ -121,12 +116,13 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       if (!episode || !playback.playing) return;
       const controller = new AbortController();
       stepStreams.push(controller);
-      const firstNoNSetup = episode.steps.findIndex((actions) => !isSetup(actions))
+      const firstNoNSetup = episode.steps.findIndex((actions) => !isSetup(actions));
       const allSteps = episode.steps.slice(firstNoNSetup);
-      for (let i = playback.currentStep; i <= allSteps.length; i++) {
+      const setupStepCount = episode.steps.length - allSteps.length;
+      for (let i = playback.currentStep; i < allSteps.length; i++) {
         const step = allSteps[i]?.find((action) => action.info.timeTaken);
         const timeTaken = turnTimeOverride ?? getDelay(step);
-        nextSteps = allSteps.slice(0, i).map((step) => {
+        nextSteps = allSteps.slice(0, i + 1).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
             return {
@@ -141,6 +137,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         setSteps(nextSteps);
         setPlayback({
           ...playback,
+          setupStepCount,
           currentStep: i,
         });
         await sleep(timeTaken / playback.speed);

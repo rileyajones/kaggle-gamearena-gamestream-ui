@@ -43,3 +43,14 @@ export function getDelay(step: Step|undefined) {
   const secondsTaken = step?.info?.timeTaken; 
   return secondsTaken ?  secondsTaken * 1000 : 0;
 }
+
+export function containsIllegalMove(stepIndex: number, actions: Step[]) {
+  const allSubmissionsInvalid = actions.every(({action}) => {
+    if (isActionObject(action)) {
+      return action.submission === -1;
+    }
+    return action == '-1';
+  });
+
+  return stepIndex && allSubmissionsInvalid;
+}

@@ -5,6 +5,7 @@
   border-radius: 24px;
   flex: 1;
   overflow: hidden;
+  position: relative;
 
   &.hidden {
     visibility: hidden;
@@ -22,5 +23,22 @@
     border: none;
     flex: 1;
     width: 100%;
+  }
+}
+
+.game-over-modal {
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--background-color);
+  display: flex;
+  height: 5em;
+  justify-content: center;
+  top: 30%;
+
+  .close-btn {
+    position: absolute;
+    top: var(--spacing-s);
+    right: var(--spacing-s);
   }
 }

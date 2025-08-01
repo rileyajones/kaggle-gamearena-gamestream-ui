@@ -22,6 +22,7 @@ export interface Playback {
     playing: boolean;
     currentStep: number;
     speed: number;
+    setupStepCount: number;
     textSpeed: number;
     alwaysScroll: boolean;
 }
