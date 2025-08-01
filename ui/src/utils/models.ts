@@ -54,7 +54,7 @@ export function estimateIcon(modelName: string, edge = false): string|undefined 
   if (name.startsWith('llama')) {
     return map[Models.LLAMA];
   }
-  if (name.startsWith('gpt') || name.startsWith('openai')) {
+  if (name.startsWith('gpt') || name.startsWith('openai') || name.startsWith('o3')) {
     return map[Models.OPENAI];
   }
   if (name.startsWith('qwen')) {
