@@ -10,7 +10,7 @@ export const StreamTitle = memo(() => {
   return (
     <>
       <h1 className="stream-title">Kaggle Game Arena</h1>
-      <h2 className="sub-title" contentEditable={true} role="input">{episode.metadata?.stage}</h2>
+      <h2 className="sub-title" contentEditable={true} role="input">{episode?.metadata?.stage}</h2>
     </>
   );
 });
