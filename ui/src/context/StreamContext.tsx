@@ -95,7 +95,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     (async () => {
       const episode = episodeId ? await fetchEpisode(episodeId) : await fetchEpisodeFile(episodeFile);
       setEpisode(episode);
-      nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName, icon: estimateIcon(teamName) }));
+      nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName, icon: estimateIcon(teamName), edgeIcon: estimateIcon(teamName, true) }));
       setModels(nextModels);
       setGame({
         name: episode.name,

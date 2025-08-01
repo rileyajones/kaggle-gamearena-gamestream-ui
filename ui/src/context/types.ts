@@ -3,6 +3,7 @@ export interface ModelMetadata {
     id: string;
     name: string;
     icon?: string;
+    edgeIcon?: string;
     winLoss?: {
         numerator: number;
         denominator: number;
