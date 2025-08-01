@@ -56,7 +56,7 @@ export const GameViewer = () => {
     <div className={classNames('game-viewer', !fullyInitialized && 'hidden')}>
       <div className="playback-banner">
         <span className="material-icons">info</span>
-        You're watching a replay of the match simulation, running at {playback.speed}x speed.
+        Replay of the match simulation. Turn times have been modified to be constant.
       </div>
       <iframe
         ref={iframeRef}
