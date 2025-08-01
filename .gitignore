@@ -26,3 +26,5 @@ dist-ssr
 
 # Episodes
 server/static/*.json
+# Episode recordings
+server/static/*_recording.txt

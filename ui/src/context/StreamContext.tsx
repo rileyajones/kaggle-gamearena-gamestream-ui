@@ -61,6 +61,18 @@ async function fetchEpisodeFile(filename: string): Promise<Episode & StepsChunk>
   return response.json();
 }
 
+async function recordMove(episodeId: string, initialize = false) {
+  await fetch(`${BACKEND}/api/episode/${episodeId}/move`, {
+    method: 'POST',
+    headers: {
+      ['Content-Type']: 'application/json',
+    },
+    body: JSON.stringify({
+      initialize,
+    })
+  });
+}
+
 const stepStreams: AbortController[] = [];
 
 export const StreamContextProvider = (props: StreamContextProviderProps) => {
@@ -114,6 +126,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         controller.abort();
       }
       if (!episode || !playback.playing) return;
+      if (playback.currentStep === 0) {
+        recordMove(episodeId, true);
+      }
       const controller = new AbortController();
       stepStreams.push(controller);
       const firstNoNSetup = episode.steps.findIndex((actions) => !isSetup(actions));
@@ -141,6 +156,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
           currentStep: i,
         });
         await sleep(timeTaken / playback.speed);
+        recordMove(episodeId);
       }
     })();
   }, [playback.playing, playback.speed, episode])
