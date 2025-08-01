@@ -3,6 +3,8 @@ import { StreamContext } from "../../context/StreamContext";
 import { classNames } from "../../utils/classnames";
 import './style.scss';
 import { GameOverModal } from "./GameOverModal";
+import { sleep } from "../../context/utils";
+import { getActiveModelStep, getDelay } from "../../utils/step";
 
 export const GameViewer = () => {
   const { steps, episode, game, playback } = useContext(StreamContext);
@@ -17,8 +19,7 @@ export const GameViewer = () => {
 
 
   useEffect(() => {
-    // Note that the viewer blanks out the board when the final step is "done"
-    if (!fullyInitialized) return;
+    const currentStep = steps[playback.currentStep];
     const windowKaggle = {
       'debug': false,
       'playing': false,
@@ -36,11 +37,27 @@ export const GameViewer = () => {
       },
     };
 
-    currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
-    // Waiting a couple milliseconds for the frame to rerender.
-    setTimeout(() => {
+    // Note that the viewer blanks out the board when the final step is "done"
+    if (!fullyInitialized) return;
+    if (!currentStep) {
+      (async () => {
+        currentIframe.contentWindow.postMessage({
+          ...windowKaggle,
+          'step': 1
+        }, currentIframe.src);
+        await sleep(200);
+        currentIframe.contentWindow.postMessage({ setSteps: episode.steps }, game.viewerUrl);
+      })();
+
+      return;
+    }
+    (async () => {
+      await sleep(getDelay(getActiveModelStep(currentStep), playback.textSpeed));
+      currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
+      // Waiting a couple milliseconds for the frame to rerender.
+      await sleep(200);
       currentIframe.contentWindow.postMessage({ setSteps: episode.steps }, game.viewerUrl);
-    }, 200);
+    })();
   }, [fullyInitialized, playback, steps]);
 
 

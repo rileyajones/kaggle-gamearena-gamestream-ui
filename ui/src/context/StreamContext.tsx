@@ -4,7 +4,7 @@ import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
 import { estimateIcon } from "../utils/models";
-import { getDelay, hasAction, isSetup } from "../utils/step";
+import { getActiveModelStep, getDelay, hasAction, isSetup } from "../utils/step";
 import { getEpisodePlayerPath } from "../utils/games";
 
 /** The interface definition of the StreamContext */
@@ -120,8 +120,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const allSteps = episode.steps.slice(firstNoNSetup);
       const setupStepCount = episode.steps.length - allSteps.length;
       for (let i = playback.currentStep; i < allSteps.length; i++) {
-        const step = allSteps[i]?.find((action) => action.info.timeTaken);
-        const timeTaken = turnTimeOverride ?? getDelay(step);
+        const step = getActiveModelStep(allSteps[i]);
+        const timeTaken = turnTimeOverride ?? getDelay(step, playback.textSpeed);
         nextSteps = allSteps.slice(0, i + 1).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
