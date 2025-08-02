@@ -7,7 +7,7 @@ import { sleep } from "../../context/utils";
 import { getActiveModelStep, getTurnTime } from "../../utils/step";
 
 export const GameViewer = () => {
-  const { steps, episode, game, playback } = useContext(StreamContext);
+  const { steps, episode, game, playback, setPlayback } = useContext(StreamContext);
   const [loaded, setLoaded] = useState(false);
   const iframeRef = useRef();
 
@@ -47,6 +47,9 @@ export const GameViewer = () => {
         }, currentIframe.src);
         await sleep(200);
         currentIframe.contentWindow.postMessage({ setSteps: episode.steps }, game.viewerUrl);
+        if (playback.autoPlay && !playback.playing) {
+          setPlayback({ ...playback, playing: true });
+        }
       })();
 
       return;

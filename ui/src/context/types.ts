@@ -21,6 +21,7 @@ export interface GameMetadata {
 
 export interface Playback {
     playing: boolean;
+    autoPlay: boolean;
     currentStep: number;
     speed: number;
     setupStepCount: number;

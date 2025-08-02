@@ -30,6 +30,7 @@ const defaultStreamContext: StreamContextI = {
   episode: undefined,
   playback: {
     playing: false,
+    autoPlay: false,
     currentStep: 0,
     setupStepCount: 0,
     speed: 1,
@@ -101,8 +102,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
 
 
   useEffect(() => {
-    const playing = !showControls || autoPlay;
-    setPlayback({ ...playback, playing, alwaysScroll, textSpeed, chunkBy });
+    const nextAutoPlay = !showControls || autoPlay;
+    setPlayback({ ...playback, autoPlay: nextAutoPlay, alwaysScroll, textSpeed, chunkBy });
   }, [showControls, alwaysScroll, textSpeed, chunkBy]);
 
   useEffect(() => {
