@@ -79,7 +79,7 @@ export const GameViewer = () => {
     <div className={classNames('game-viewer', !fullyInitialized && 'hidden')}>
       <div className="playback-banner">
         <span className="material-icons">info</span>
-        Replay of the match simulation. Turn times have been modified to be constant.
+        Turn times have been modified.
       </div>
       <iframe
         ref={iframeRef}

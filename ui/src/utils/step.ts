@@ -51,7 +51,7 @@ export function getActiveModelStep(steps: Step[]) {
 
 export function getTurnTime(step: Step|undefined, playback: Playback) {
   const drawTime = getTextDrawTime(step, playback);
-  return drawTime + 2000;
+  return drawTime + 5000;
 }
 
 export function getTextDrawTime(step: Step|undefined, playback: Playback) {
