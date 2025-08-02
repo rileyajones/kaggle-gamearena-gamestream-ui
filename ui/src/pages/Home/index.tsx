@@ -11,7 +11,7 @@ import { IconButton } from '../../components/IconButton/IconButton';
 
 export function Home() {
   const { showControls } = useContext(StreamContext);
-  const [leftPanelExpanded, setLeftPanelExpanded] = useState(false);
+  const [leftPanelExpanded, setLeftPanelExpanded] = useState(true);
 
   return (
     <div className="home">
