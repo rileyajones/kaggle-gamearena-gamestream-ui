@@ -49,3 +49,5 @@ docker run -d -p 3001:3001 kaggle/gamearena-stream-ui
 `turnTimeOverride` sets all turns of the game to be the specified value (in ms).
 
 `chunkBy` if set equal to the literal `word` the thoughts will be split by space rather than by character greatly increasing the speed.
+
+`subtitle` sets the subtitle shown at the top of the page.

@@ -111,6 +111,12 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     let nextModels = [...models];
     (async () => {
       const episode = episodeId ? await fetchEpisode(episodeId) : await fetchEpisodeFile(episodeFile);
+      if (params.has('subtitle')) {
+        if (!episode.metadata) {
+          episode.metadata = {};
+        }
+        episode.metadata.stage = params.get('subtitle');
+      }
       setEpisode(episode);
       nextModels = episode.info.TeamNames.map((teamName) => ({
         id: teamName,
