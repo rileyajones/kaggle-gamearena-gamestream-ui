@@ -2,7 +2,6 @@ import { useContext } from 'preact/hooks';
 import { memo } from 'preact/compat';
 import { StreamContext } from '../../context/StreamContext';
 import './style.scss'
-import { streamString } from '../../context/utils';
 
 export const StreamTitle = memo(() => {
   const { episode } = useContext(StreamContext);
