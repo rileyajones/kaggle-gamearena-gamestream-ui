@@ -4,20 +4,22 @@ import { sleep } from '../../context/utils';
 import './style.scss';
 
 interface AgentRespondingProps {
-    model: ModelMetadata;
+  model: ModelMetadata;
+  decoration?: string;
 }
 
 export const AgentResponding = (props: AgentRespondingProps) => {
-    const [dotCount, setDotCount] = useState(0);
-    useEffect(() => {
-        (async () => {
-            await sleep(250);
-            setDotCount((dotCount + 1) % 4);
-        })();
-    }, [dotCount]);
+  const [dotCount, setDotCount] = useState(0);
+  useEffect(() => {
+    (async () => {
+      await sleep(250);
+      setDotCount((dotCount + 1) % 4);
+    })();
+  }, [dotCount]);
 
-    return <div className="agent-responding">
-        {props.model.name} is responding{Array.from({ length: dotCount }, () => <>.</>)}
-    </div>
+  return <div className="agent-responding">
+    {props.decoration && <img src={props.decoration} />}
+    {props.model.name} is responding{Array.from({ length: dotCount }, () => <>.</>)}
+  </div>
 }
 

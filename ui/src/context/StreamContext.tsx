@@ -155,9 +155,11 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         const timeTaken = turnTimeOverride ?? getTurnTime(step, playback);
         nextSteps = allSteps.slice(0, i + 1).map((step) => {
           return step.map((actions, index) => {
-            const modelId = models[index % (models.length)]?.id;
+            const modelIndex = index % (models.length);
+            const modelId = models[modelIndex]?.id;
             return {
               modelId,
+              modelIndex,
               ...actions,
             };
           })

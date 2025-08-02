@@ -152,6 +152,7 @@ export type StepAction = string|StepActionObject;
 
 export interface Step {
     modelId: string;
+    modelIndex: number;
     action: StepAction;
     info: {
       timeTaken?: number;

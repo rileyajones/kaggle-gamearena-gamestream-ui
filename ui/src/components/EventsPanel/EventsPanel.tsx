@@ -103,8 +103,11 @@ export const EventsPanel = () => {
   const previousSteps = [...steps];
   const currentStep = previousSteps.pop() ?? [];
   const currentStepAction = getActiveModelStep(currentStep);
-  const currentModelIndex = models.findIndex((model) => model.id === currentStepAction?.modelId);
-  const currentModel = models[currentModelIndex];
+  const currentModel = models[currentStepAction?.modelIndex];
+
+  const decoration = currentStepAction?.modelIndex === 0 ?
+    'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg' : // Black king
+    'https://upload.wikimedia.org/wikipedia/commons/4/42/Chess_klt45.svg'; // White king
 
   if (!steps.length) {
     return <div className="events-panel empty">
@@ -179,10 +182,10 @@ export const EventsPanel = () => {
           currentStepIndex={playback.currentStep}
           textSpeed={Math.floor(playback.textSpeed / playback.speed)}
           afterRender={maybeScroll}
-          playerNumber={currentModelIndex + 1} />
+          playerNumber={currentStepAction.modelIndex + 1} />
       </div>
 
-      {!isDone && playback.playing && <AgentResponding model={currentModel} />}
+      {!isDone && playback.playing && <AgentResponding model={currentModel} decoration={decoration} />}
     </div>
   );
 }

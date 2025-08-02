@@ -89,8 +89,16 @@
 }
 
 .agent-responding {
+  align-items: center;
   background: rgba(255, 255, 255, 0.30);
+  display: flex;
+  gap: var(--spacing-s);
   padding: var(--spacing-m) var(--spacing-l);
+
+  img {
+    height: 1em;
+    width: 1em;
+  }
 }
 
 .current-step .content {
