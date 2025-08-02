@@ -12,6 +12,7 @@ import { IconButton } from '../IconButton/IconButton';
 import Markdown from 'react-markdown';
 import './style.scss';
 import { staticFilePath } from '../../utils/backend';
+import { generateChunks } from '../../context/utils';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -74,12 +75,13 @@ interface CurrentStepProps extends StepOutlineProps {
 }
 
 const CurrentStep = memo((props: CurrentStepProps) => {
+  const { playback } = useContext(StreamContext);
   const thoughts = getThoughts(props.step);
   return <StepOutline {...props} className='current-step'>
     <div className="current-thoughts">
       {thoughts ?
         <TextStream
-          chunks={thoughts.split('')}
+          chunks={generateChunks(thoughts, playback.chunkBy)}
           chunkDelay={props.textSpeed}
           afterRender={props.afterRender}>
           {(str) =>

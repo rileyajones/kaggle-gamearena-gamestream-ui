@@ -4,7 +4,7 @@ import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
 import { estimateIcon, formatModelName } from "../utils/models";
-import { getActiveModelStep, getDelay, hasAction, isSetup } from "../utils/step";
+import { getActiveModelStep, getTurnTime, isSetup } from "../utils/step";
 import { getEpisodePlayerPath } from "../utils/games";
 
 /** The interface definition of the StreamContext */
@@ -35,6 +35,7 @@ const defaultStreamContext: StreamContextI = {
     speed: 1,
     textSpeed: 50,
     alwaysScroll: false,
+    chunkBy: 'char',
   },
   steps: [],
   currentModelId: '',
@@ -91,6 +92,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const textSpeed = params.has('textSpeed') ?
     Number.parseInt(params.get('textSpeed')) :
     defaultStreamContext.playback.textSpeed;
+  const chunkBy = params.has('chunkBy') ?
+    params.get('chunkBy') :
+    'char';
   const turnTimeOverride = params.has('turnTimeOverride') ?
     Number.parseInt(params.get('turnTimeOverride')) :
     undefined;
@@ -98,8 +102,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
 
   useEffect(() => {
     const playing = !showControls || autoPlay;
-    setPlayback({ ...playback, playing, alwaysScroll, textSpeed });
-  }, [showControls, alwaysScroll, textSpeed]);
+    setPlayback({ ...playback, playing, alwaysScroll, textSpeed, chunkBy });
+  }, [showControls, alwaysScroll, textSpeed, chunkBy]);
 
   useEffect(() => {
     if (!episodeId && !episodeFile) return;
@@ -141,7 +145,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const setupStepCount = episode.steps.length - allSteps.length;
       for (let i = playback.currentStep; i < allSteps.length; i++) {
         const step = getActiveModelStep(allSteps[i]);
-        const timeTaken = turnTimeOverride ?? getDelay(step, playback);
+        const timeTaken = turnTimeOverride ?? getTurnTime(step, playback);
         nextSteps = allSteps.slice(0, i + 1).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;
@@ -164,7 +168,29 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         recordMove(episodeId);
       }
     })();
-  }, [playback.playing, playback.speed, episode])
+  }, [playback.playing, playback.speed, episode]);
+
+  useEffect(() => {
+    if (episode?.steps.length) {
+      console.log(`There are ${episode.steps.length} steps`);
+      const estimatedTotalTime = episode.steps.reduce((sum, step) => {
+        const activeStep = getActiveModelStep(step);
+        if (!activeStep) return sum;
+        return sum + getTurnTime(activeStep, playback);
+      }, 0);
+      function formatMilliseconds(ms: number): string {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+
+        return `${formattedMinutes}:${formattedSeconds}`;
+      }
+      console.log(`The game is estiamted to take ${formatMilliseconds(estimatedTotalTime)}`);
+    }
+  }, [episode]);
 
   const currentModelId = models[(steps.length - 1) % models.length]?.id;
 

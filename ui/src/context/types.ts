@@ -26,6 +26,7 @@ export interface Playback {
     setupStepCount: number;
     textSpeed: number;
     alwaysScroll: boolean;
+    chunkBy: string;
 }
 
 export interface Episode {

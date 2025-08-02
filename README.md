@@ -44,6 +44,8 @@ docker run -d -p 3001:3001 kaggle/gamearena-stream-ui
 
 `autoPlay` causes the game to automatically start playing (even if the controls are enabled)
 
-`textSpeed` specifies the delay (in ms) between characters being drawn in the events panel.
+`textSpeed` specifies the delay (in ms) between chunks being drawn in the events panel.
 
 `turnTimeOverride` sets all turns of the game to be the specified value (in ms).
+
+`chunkBy` if set equal to the literal `word` the thoughts will be split by space rather than by character greatly increasing the speed.

@@ -4,7 +4,7 @@ import { classNames } from "../../utils/classnames";
 import './style.scss';
 import { GameOverModal } from "./GameOverModal";
 import { sleep } from "../../context/utils";
-import { getActiveModelStep, getDelay } from "../../utils/step";
+import { getActiveModelStep, getTurnTime } from "../../utils/step";
 
 export const GameViewer = () => {
   const { steps, episode, game, playback } = useContext(StreamContext);
@@ -54,7 +54,7 @@ export const GameViewer = () => {
     (async () => {
       // If the game is playing, wait for the text to finish streaming.
       if (playback.playing) {
-        await sleep(getDelay(getActiveModelStep(currentStep), playback));
+        await sleep(getTurnTime(getActiveModelStep(currentStep), playback));
       }
       currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
       // Waiting a couple milliseconds for the frame to rerender.
