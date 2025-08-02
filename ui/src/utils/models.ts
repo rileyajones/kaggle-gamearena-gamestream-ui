@@ -62,3 +62,7 @@ export function estimateIcon(modelName: string, edge = false): string|undefined 
   }
   return;
 }
+
+export function formatModelName(modelName: string) {
+  return modelName.replaceAll(/openai\s?/ig, '');
+}

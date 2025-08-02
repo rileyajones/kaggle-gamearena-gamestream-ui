@@ -3,7 +3,7 @@ import { PropsWithChildren, useState, useEffect } from "preact/compat";
 import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
-import { estimateIcon } from "../utils/models";
+import { estimateIcon, formatModelName } from "../utils/models";
 import { getActiveModelStep, getDelay, hasAction, isSetup } from "../utils/step";
 import { getEpisodePlayerPath } from "../utils/games";
 
@@ -107,7 +107,12 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     (async () => {
       const episode = episodeId ? await fetchEpisode(episodeId) : await fetchEpisodeFile(episodeFile);
       setEpisode(episode);
-      nextModels = episode.info.TeamNames.map((teamName) => ({ id: teamName, name: teamName, icon: estimateIcon(teamName), edgeIcon: estimateIcon(teamName, true) }));
+      nextModels = episode.info.TeamNames.map((teamName) => ({
+        id: teamName,
+        name: formatModelName(teamName),
+        icon: estimateIcon(teamName),
+        edgeIcon: estimateIcon(teamName, true)
+      }));
       setModels(nextModels);
       setGame({
         name: episode.name,
