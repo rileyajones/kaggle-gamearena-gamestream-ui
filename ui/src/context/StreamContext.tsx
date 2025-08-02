@@ -136,7 +136,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const setupStepCount = episode.steps.length - allSteps.length;
       for (let i = playback.currentStep; i < allSteps.length; i++) {
         const step = getActiveModelStep(allSteps[i]);
-        const timeTaken = turnTimeOverride ?? getDelay(step, playback.textSpeed);
+        const timeTaken = turnTimeOverride ?? getDelay(step, playback);
         nextSteps = allSteps.slice(0, i + 1).map((step) => {
           return step.map((actions, index) => {
             const modelId = models[index % (models.length)]?.id;

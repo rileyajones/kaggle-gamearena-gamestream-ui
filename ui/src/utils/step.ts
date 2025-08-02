@@ -1,4 +1,4 @@
-import { Step, StepAction, StepActionObject } from "../context/types";
+import { Playback, Step, StepAction, StepActionObject } from "../context/types";
 
 export function getThoughts(step: Step) {
   if (isActionObject(step.action)) {
@@ -46,10 +46,10 @@ export function getActiveModelStep(steps: Step[]) {
   return steps.find(hasAction) ?? steps.find(hasTimeout);
 }
 
-export function getDelay(step: Step|undefined, textSpeed: number) {
+export function getDelay(step: Step|undefined, playback: Playback) {
   const thoughts = getThoughts(step);
   if (thoughts) {
-    return (thoughts.length * textSpeed) + 500;
+    return (thoughts.length * Math.floor(playback.textSpeed / playback.speed)) + 500;
   }
   const secondsTaken = step?.info?.timeTaken; 
   return secondsTaken ?  secondsTaken * 1000 : 0;

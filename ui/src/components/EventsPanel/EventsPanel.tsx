@@ -172,10 +172,10 @@ export const EventsPanel = () => {
         <CurrentStep
           step={currentStepAction}
           model={currentModel}
-          stepIndex={steps.length}
-          setAsCurrent={() => setStep(steps.length)}
+          stepIndex={steps.length - 1}
+          setAsCurrent={() => setStep(steps.length - 1)}
           currentStepIndex={playback.currentStep}
-          textSpeed={playback.textSpeed}
+          textSpeed={Math.floor(playback.textSpeed / playback.speed)}
           afterRender={maybeScroll}
           playerNumber={currentModelIndex + 1} />
       </div>

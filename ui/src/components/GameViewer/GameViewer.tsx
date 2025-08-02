@@ -52,7 +52,10 @@ export const GameViewer = () => {
       return;
     }
     (async () => {
-      await sleep(getDelay(getActiveModelStep(currentStep), playback.textSpeed));
+      // If the game is playing, wait for the text to finish streaming.
+      if (playback.playing) {
+        await sleep(getDelay(getActiveModelStep(currentStep), playback));
+      }
       currentIframe.contentWindow.postMessage(windowKaggle, currentIframe.src);
       // Waiting a couple milliseconds for the frame to rerender.
       await sleep(200);

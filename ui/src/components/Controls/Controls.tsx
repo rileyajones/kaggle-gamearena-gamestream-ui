@@ -31,7 +31,7 @@ export const Controls = () => {
   }
 
   function next() {
-    setPlayback({ ...playback, currentStep: playback.currentStep + 1 });
+    setPlayback({ ...playback, currentStep: Math.min(playback.currentStep + 1, steps.length - 1) });
   }
 
   function toggleSpeed() {
@@ -45,7 +45,7 @@ export const Controls = () => {
       <IconButton onClick={replay} disabled={!playback.currentStep}>replay</IconButton>
       <IconButton onClick={previous} disabled={!playback.currentStep}>skip_previous</IconButton>
       <IconButton onClick={togglePlayback}>{playback.playing ? 'pause' : 'play_arrow'}</IconButton>
-      <IconButton onClick={next} disabled={!steps.length || playback.currentStep >= steps.length}>skip_next</IconButton>
+      <IconButton onClick={next} disabled={!steps.length || playback.currentStep >= steps.length - 1}>skip_next</IconButton>
       <Button onClick={toggleSpeed}>{playback.speed}x</Button>
     </div>
   );
