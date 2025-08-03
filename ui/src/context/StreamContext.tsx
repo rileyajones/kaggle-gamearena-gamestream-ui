@@ -125,8 +125,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         episode.metadata.stage = params.get('subtitle');
       }
       setEpisode(episode);
-      nextModels = episode.info.TeamNames.map((teamName) => ({
-        id: teamName,
+      nextModels = episode.info.TeamNames.map((teamName, index) => ({
+        id: `${teamName}-${index}`,
         name: formatModelName(teamName),
         icon: estimateIcon(teamName),
         edgeIcon: estimateIcon(teamName, true)

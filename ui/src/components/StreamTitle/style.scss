@@ -9,7 +9,7 @@
   box-sizing: border-box;
   border: 1px solid transparent;
   border-radius: 8px;
-  font-family: 'Inter';
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-size: 1.75em;
   min-width: 4em;
   padding: 0 var(--spacing-m);
@@ -22,6 +22,6 @@
 .stream-title,
 .sub-title {
   margin: 0;
-  text-align: center;
+  text-align: end;
   padding: var(--spacing-m) var(--spacing-m) 0 var(--spacing-m);
 }

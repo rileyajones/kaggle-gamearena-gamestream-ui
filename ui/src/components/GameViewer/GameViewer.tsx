@@ -79,7 +79,7 @@ export const GameViewer = () => {
     <div className={classNames('game-viewer', !fullyInitialized && 'hidden')}>
       <div className="playback-banner">
         <span className="material-icons">info</span>
-        Turn times have been modified.
+        This is a replay with turn times adjusted
       </div>
       <iframe
         ref={iframeRef}

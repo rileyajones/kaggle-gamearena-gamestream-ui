@@ -7,7 +7,7 @@ import './style.scss';
 export const Players = () => {
   const { models, currentModelId } = useContext(StreamContext);
   return <ul className="players-list">
-    {models.reverse().map((model, index) =>
+    {[...models].reverse().map((model, index) =>
       <>
         <li key={model.id} className={classNames(model.id === currentModelId && 'active')}>
           {model.icon && <ModelIcon model={model} retro={true} />}
