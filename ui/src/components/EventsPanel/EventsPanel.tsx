@@ -7,7 +7,7 @@ import { AgentResponding } from './AgentResponding';
 import { ModelIcon } from '../ModelIcon/ModelIcon';
 import { Move } from './Move';
 import { TextStream } from '../TextStream/TextStream';
-import { getActiveModelStep, getThoughts } from '../../utils/step';
+import { getActiveModelStep, getThoughts, isGameDone } from '../../utils/step';
 import { IconButton } from '../IconButton/IconButton';
 import Markdown from 'react-markdown';
 import './style.scss';
@@ -132,7 +132,7 @@ export const EventsPanel = () => {
     setExpandedSteps(nextExpandedSteps);
   }
 
-  const isDone = currentStep.every((action) => action.status === 'DONE');
+  const isDone = isGameDone(currentStep);
 
   // Ensure the left panel scrolls as thoughts are rendered.
   function maybeScroll() {

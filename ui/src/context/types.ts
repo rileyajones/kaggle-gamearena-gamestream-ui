@@ -28,6 +28,7 @@ export interface Playback {
     textSpeed: number;
     alwaysScroll: boolean;
     chunkBy: string;
+    turnDelay: number;
 }
 
 export interface Episode {

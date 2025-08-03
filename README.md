@@ -46,8 +46,12 @@ docker run -d -p 3001:3001 kaggle/gamearena-stream-ui
 
 `textSpeed` specifies the delay (in ms) between chunks being drawn in the events panel.
 
+`turnDelay` sets the amount of time to wait between steps.
+
 `turnTimeOverride` sets all turns of the game to be the specified value (in ms).
 
 `chunkBy` if set equal to the literal `word` the thoughts will be split by space rather than by character greatly increasing the speed.
 
 `subtitle` sets the subtitle shown at the top of the page.
+
+`nextEpisodeIds` can be set equal to a comma seperated list of episode ids. If set these will be treated as a queue and played from left to right with a small delay in between.

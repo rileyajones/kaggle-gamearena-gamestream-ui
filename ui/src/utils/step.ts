@@ -49,9 +49,13 @@ export function getActiveModelStep(steps: Step[]) {
   return steps.find(hasAction) ?? steps.find(hasTimeout);
 }
 
+export function isGameDone(steps: Step[]) {
+  return steps.every(({status}) => status === 'DONE' || status === 'TIMEOUT' || status === 'ERROR');
+}
+
 export function getTurnTime(step: Step|undefined, playback: Playback) {
   const drawTime = getTextDrawTime(step, playback);
-  return drawTime + 5000;
+  return drawTime + playback.turnDelay;
 }
 
 export function getTextDrawTime(step: Step|undefined, playback: Playback) {

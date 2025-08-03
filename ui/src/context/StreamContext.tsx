@@ -4,7 +4,7 @@ import { ModelMetadata, GameMetadata, Step, Episode, Playback } from "./types";
 import { sleep } from "./utils";
 import { BACKEND, staticFilePath } from "../utils/backend";
 import { estimateIcon, formatModelName } from "../utils/models";
-import { getActiveModelStep, getTurnTime, isSetup } from "../utils/step";
+import { getActiveModelStep, getTurnTime, isGameDone, isSetup } from "../utils/step";
 import { getEpisodePlayerPath } from "../utils/games";
 
 /** The interface definition of the StreamContext */
@@ -35,6 +35,7 @@ const defaultStreamContext: StreamContextI = {
     setupStepCount: 0,
     speed: 1,
     textSpeed: 50,
+    turnDelay: 5000,
     alwaysScroll: false,
     chunkBy: 'char',
   },
@@ -96,15 +97,21 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const chunkBy = params.has('chunkBy') ?
     params.get('chunkBy') :
     'char';
+  const turnDelay = params.has('turnDelay') ?
+    Number.parseInt(params.get('turnDelay')) :
+    defaultStreamContext.playback.turnDelay;
   const turnTimeOverride = params.has('turnTimeOverride') ?
     Number.parseInt(params.get('turnTimeOverride')) :
     undefined;
+  const nextEpisodeIds = params.has('nextEpisodeIds') ?
+    params.get('nextEpisodeIds').split(',') :
+    [];
 
 
   useEffect(() => {
     const nextAutoPlay = !showControls || autoPlay;
-    setPlayback({ ...playback, autoPlay: nextAutoPlay, alwaysScroll, textSpeed, chunkBy });
-  }, [showControls, alwaysScroll, textSpeed, chunkBy]);
+    setPlayback({ ...playback, autoPlay: nextAutoPlay, alwaysScroll, textSpeed, chunkBy, turnDelay });
+  }, [showControls, alwaysScroll, textSpeed, chunkBy, turnDelay]);
 
   useEffect(() => {
     if (!episodeId && !episodeFile) return;
@@ -197,9 +204,28 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
 
         return `${formattedMinutes}:${formattedSeconds}`;
       }
-      console.log(`The game is estiamted to take ${formatMilliseconds(estimatedTotalTime)}`);
+      console.log(`The game is estimated to take ${formatMilliseconds(estimatedTotalTime)}`);
+      if (nextEpisodeIds.length) {
+        console.log(`After this game is complete, playback will continue to ${nextEpisodeIds[0]}`)
+      }
     }
   }, [episode]);
+
+  useEffect(() => {
+    const shouldContinueToNextEpisode = playback.autoPlay && nextEpisodeIds.length;
+    const currentStep = steps[playback.currentStep];
+    if (!currentStep) return;
+    const isEpisodeComplete = isGameDone(currentStep);
+    if (!shouldContinueToNextEpisode || !isEpisodeComplete) return;
+    (async () => {
+      const [nextEpisodeId, ...nextNextEpisodeIds] = nextEpisodeIds;
+      console.log(`Continuing playback to episode ${nextEpisodeId}`);
+      await sleep(10000);
+      params.set('nextEpisodeIds', nextNextEpisodeIds.join(','))
+      params.set('episodeId', nextEpisodeId);
+      window.location.search = params.toString();
+    })();
+  }, [playback.autoPlay, playback.currentStep, steps.length]);
 
   const currentModelId = models[(steps.length - 1) % models.length]?.id;
 
