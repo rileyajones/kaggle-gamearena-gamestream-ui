@@ -178,7 +178,7 @@ export function generateChunks(str: string, chunkBy?: string) {
 export function getGameOverText(episode: Episode, playback: Playback, steps: Step[][]) {
   const currentStep = steps[Math.min(playback.currentStep, steps.length - 1)];
   const endedDueToIllegalMove = currentStep && containsIllegalMove(playback.currentStep, currentStep);
-  const winnerIndex = episode.rewards.find((reward) => reward !== 0);
+  const winnerIndex = episode.rewards.find((reward) => reward > 0);
   const isDraw = winnerIndex === undefined;
   const winner = episode.info.TeamNames[winnerIndex];
   const isTimeout = currentStep.some((step) => hasTimeout(step));

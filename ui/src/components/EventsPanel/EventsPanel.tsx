@@ -72,7 +72,7 @@ const PreviousStep = (props: PreviousStepProps) => {
 interface CurrentStepProps extends StepOutlineProps {
   step: Step;
   textSpeed: number;
-  afterRender?: () => void;
+  afterRender?: (done: boolean) => void;
 }
 
 const CurrentStep = memo((props: CurrentStepProps) => {
@@ -99,6 +99,7 @@ const CurrentStep = memo((props: CurrentStepProps) => {
 
 export const EventsPanel = () => {
   const { episode, steps, models, playback, setPlayback } = useContext(StreamContext);
+  const [textComplete, setTextComplete] = useState(false);
   const [expandedSteps, setExpandedSteps] = useState(new Set<number>());
   const stepsContainer = useRef<HTMLDivElement | null>();
   const previousSteps = [...steps];
@@ -137,8 +138,9 @@ export const EventsPanel = () => {
   const gameOverText = getGameOverText(episode, playback, steps);
 
   // Ensure the left panel scrolls as thoughts are rendered.
-  function maybeScroll() {
+  function maybeScroll(done: boolean) {
     const scrollContainer = stepsContainer.current;
+    setTextComplete(done);
     if (!scrollContainer) return;
     const estimatedElementHeight = 100;
     const atBottom = scrollContainer.scrollTop +
@@ -187,8 +189,8 @@ export const EventsPanel = () => {
           playerNumber={currentStepAction.modelIndex + 1} />
       </div>
 
-      {!isDone && playback.playing && <AgentResponding model={currentModel} decoration={decoration} />}
-      {isDone && gameOverText && <div className="winner-dialog">{gameOverText}</div>}
+      {!textComplete && playback.playing && <AgentResponding model={currentModel} decoration={decoration} />}
+      {isDone && gameOverText && textComplete && <div className="winner-dialog">{gameOverText}</div>}
     </div>
   );
 }
