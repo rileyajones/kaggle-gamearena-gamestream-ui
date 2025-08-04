@@ -10,7 +10,7 @@ export const Players = () => {
     {[...models].reverse().map((model, index) =>
       <>
         <li key={model.id} className={classNames(model.id === currentModelId && 'active')}>
-          {model.icon && <ModelIcon model={model} retro={true} />}
+          {model.icon && <ModelIcon model={model} />}
           <div className="text">
             <div className="name" data-tooltip={model.name}>
               {model.name}
