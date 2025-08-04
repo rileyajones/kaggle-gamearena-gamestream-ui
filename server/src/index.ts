@@ -8,6 +8,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const OUTPUT_DIR = process.env.NODE_ENV ? '../static' : 'static';
+
 async function fetchEpisode(episodeId: string) {
     const url = `https://www.kaggleusercontent.com/episodes/${episodeId}.json`;
     const response = await fetch(url);
@@ -15,7 +17,7 @@ async function fetchEpisode(episodeId: string) {
 }
 
 function getRecodingPath(episodeId: string) {
-  return `static/${episodeId}_recording.txt`;
+  return `${OUTPUT_DIR}/${episodeId}_recording.txt`;
 }
 
 function recordEpisodeMove(episodeId: string) {
@@ -34,12 +36,16 @@ function clearEpisodeRecording(episodeId: string) {
 }
 
 function saveEpisodeFile(episodeId: string, replayJson: string) {
-  fs.writeFileSync(`static/${episodeId}.json`, Buffer.from(JSON.stringify(replayJson)));
+  fs.writeFileSync(`${OUTPUT_DIR}/${episodeId}.json`, Buffer.from(JSON.stringify(replayJson)));
 }
 
 app.get('/api/episode/:episodeId', async (req, res) => {
   const episodeJson = await fetchEpisode(req.params.episodeId);
-  saveEpisodeFile(req.params.episodeId, episodeJson);
+  try {
+    saveEpisodeFile(req.params.episodeId, episodeJson);
+  } catch (e) {
+    console.error(e);
+  }
   res.json(episodeJson);
 });
 
