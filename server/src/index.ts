@@ -33,8 +33,14 @@ function clearEpisodeRecording(episodeId: string) {
   }
 }
 
+function saveEpisodeFile(episodeId: string, replayJson: string) {
+  fs.writeFileSync(`static/${episodeId}.json`, Buffer.from(JSON.stringify(replayJson)));
+}
+
 app.get('/api/episode/:episodeId', async (req, res) => {
-    res.json(await fetchEpisode(req.params.episodeId));
+  const episodeJson = await fetchEpisode(req.params.episodeId);
+  saveEpisodeFile(req.params.episodeId, episodeJson);
+  res.json(episodeJson);
 });
 
 app.post('/api/episode/:episodeId/move', (req, res) => {
