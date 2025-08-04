@@ -220,7 +220,7 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     (async () => {
       const [nextEpisodeId, ...nextNextEpisodeIds] = nextEpisodeIds;
       console.log(`Continuing playback to episode ${nextEpisodeId}`);
-      await sleep(10000);
+      await sleep(30000);
       params.set('nextEpisodeIds', nextNextEpisodeIds.join(','))
       params.set('episodeId', nextEpisodeId);
       window.location.search = params.toString();
