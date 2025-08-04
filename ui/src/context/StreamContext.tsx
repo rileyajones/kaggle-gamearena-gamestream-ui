@@ -227,7 +227,8 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     })();
   }, [playback.autoPlay, playback.currentStep, steps.length]);
 
-  const currentModelId = models[(steps.length - 1) % models.length]?.id;
+  const currentStep = getActiveModelStep(steps[playback.currentStep] ?? []);
+  const currentModelId = models[currentStep?.modelIndex]?.id;
 
   const context = {
     ...defaultStreamContext,
