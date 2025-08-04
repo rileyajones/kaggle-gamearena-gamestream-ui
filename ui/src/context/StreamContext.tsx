@@ -106,6 +106,9 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
   const nextEpisodeIds = params.has('nextEpisodeIds') ?
     params.get('nextEpisodeIds').split(',') :
     [];
+  const scores = params.has('scores') ?
+    params.get('scores').split(',') :
+    [];
 
 
   useEffect(() => {
@@ -125,11 +128,13 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
         episode.metadata.stage = params.get('subtitle');
       }
       setEpisode(episode);
+      const ranks = (scores[0] ?? '').split(':');
       nextModels = episode.info.TeamNames.map((teamName, index) => ({
         id: `${teamName}-${index}`,
         name: formatModelName(teamName),
         icon: estimateIcon(teamName),
-        edgeIcon: estimateIcon(teamName, true)
+        edgeIcon: estimateIcon(teamName, true),
+        rank: ranks[index],
       }));
       setModels(nextModels);
       setGame({
@@ -219,9 +224,19 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     if (!shouldContinueToNextEpisode || !isEpisodeComplete) return;
     (async () => {
       const [nextEpisodeId, ...nextNextEpisodeIds] = nextEpisodeIds;
+      const [, ...nextScores] = scores;
       console.log(`Continuing playback to episode ${nextEpisodeId}`);
       await sleep(30000);
-      params.set('nextEpisodeIds', nextNextEpisodeIds.join(','))
+      if (nextNextEpisodeIds.length) {
+        params.set('nextEpisodeIds', nextNextEpisodeIds.join(','))
+      } else {
+        params.delete('nextEpisodeIds');
+      }
+      if (nextScores.length) {
+        params.set('scores', nextScores.join(','));
+      } else {
+        params.delete('scores');
+      }
       params.set('episodeId', nextEpisodeId);
       window.location.search = params.toString();
     })();

@@ -55,3 +55,5 @@ docker run -d -p 3001:3001 kaggle/gamearena-stream-ui
 `subtitle` sets the subtitle shown at the top of the page.
 
 `nextEpisodeIds` can be set equal to a comma seperated list of episode ids. If set these will be treated as a queue and played from left to right with a small delay in between.
+
+`scores` a comma seperated list of score colon deliminated scores. If set the agents scores will be set equal to specified values. The order of the scores should correspond to the order of the team names in the Episode.info.TeamNames field. 

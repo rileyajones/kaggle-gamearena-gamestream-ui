@@ -8,7 +8,7 @@ export interface ModelMetadata {
         numerator: number;
         denominator: number;
     };
-    rank?: number;
+    rank?: number|string;
 }
 
 /** Metadata about the a game. */
