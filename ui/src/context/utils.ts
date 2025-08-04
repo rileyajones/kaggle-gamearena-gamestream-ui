@@ -1,3 +1,6 @@
+import { containsIllegalMove, hasTimeout } from "../utils/step";
+import { Episode, Playback, Step } from "./types";
+
 /** Reads a stream of data */
 export async function* readStreamChunks(
   url: string,
@@ -170,4 +173,29 @@ export function generateChunks(str: string, chunkBy?: string) {
     return str.split(' ').map((chunk) => chunk + ' ');
   }
   return str.split('');
+}
+
+export function getGameOverText(episode: Episode, playback: Playback, steps: Step[][]) {
+  const currentStep = steps[Math.min(playback.currentStep, steps.length - 1)];
+  const endedDueToIllegalMove = currentStep && containsIllegalMove(playback.currentStep, currentStep);
+  const winnerIndex = episode.rewards.find((reward) => reward !== 0);
+  const isDraw = winnerIndex === undefined;
+  const winner = episode.info.TeamNames[winnerIndex];
+  const isTimeout = currentStep.some((step) => hasTimeout(step));
+
+  if (endedDueToIllegalMove) {
+    return 'The game ended due to an illegal move';
+  }
+  if (isDraw) {
+    return 'The game has ended in a draw';
+  }
+  if (winner) {
+    return `${winner} wins`;
+  }
+
+  if (isTimeout) {
+    return `The game ended in a timeout`;
+  }
+
+  return undefined;
 }

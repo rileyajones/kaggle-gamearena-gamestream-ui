@@ -124,3 +124,9 @@
   justify-content: center;
   overflow: hidden;
 }
+
+.winner-dialog {
+  background-color: var(--background-color-variant);
+  border-top: 1px solid var(--border-color);
+  padding: var(--spacing-l);
+}

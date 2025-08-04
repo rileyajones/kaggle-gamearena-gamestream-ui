@@ -12,7 +12,8 @@ import { IconButton } from '../IconButton/IconButton';
 import Markdown from 'react-markdown';
 import './style.scss';
 import { staticFilePath } from '../../utils/backend';
-import { generateChunks } from '../../context/utils';
+import { generateChunks, getGameOverText } from '../../context/utils';
+import { getEpisodePlayerPath } from '../../utils/games';
 
 interface StepOutlineProps extends PropsWithChildren {
   step: Step;
@@ -97,7 +98,7 @@ const CurrentStep = memo((props: CurrentStepProps) => {
 
 
 export const EventsPanel = () => {
-  const { steps, models, playback, setPlayback } = useContext(StreamContext);
+  const { episode, steps, models, playback, setPlayback } = useContext(StreamContext);
   const [expandedSteps, setExpandedSteps] = useState(new Set<number>());
   const stepsContainer = useRef<HTMLDivElement | null>();
   const previousSteps = [...steps];
@@ -133,6 +134,7 @@ export const EventsPanel = () => {
   }
 
   const isDone = isGameDone(currentStep);
+  const gameOverText = getGameOverText(episode, playback, steps);
 
   // Ensure the left panel scrolls as thoughts are rendered.
   function maybeScroll() {
@@ -186,6 +188,7 @@ export const EventsPanel = () => {
       </div>
 
       {!isDone && playback.playing && <AgentResponding model={currentModel} decoration={decoration} />}
+      {isDone && gameOverText && <div className="winner-dialog">{gameOverText}</div>}
     </div>
   );
 }
