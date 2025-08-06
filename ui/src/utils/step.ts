@@ -1,8 +1,8 @@
 import { Playback, Step, StepAction, StepActionObject } from "../context/types";
 import { generateChunks } from "../context/utils";
 
-export function getThoughts(step: Step) {
-  if (isActionObject(step.action)) {
+export function getThoughts(step: Step|undefined) {
+  if (isActionObject(step?.action)) {
     const thoughts = step.action.thoughts ?? '';
     const rethinks = thoughts.split('RETHINK');
     return rethinks[rethinks.length - 1];
@@ -41,8 +41,8 @@ export function hasAction({action}: Step) {
   return action !== '';
 }
 
-export function hasTimeout({status}: Step) {
-  return status === 'TIMEOUT';
+export function hasTimeout(step: Step|undefined) {
+  return step?.status === 'TIMEOUT';
 }
 
 export function getActiveModelStep(steps: Step[]) {

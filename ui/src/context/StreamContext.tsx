@@ -34,10 +34,10 @@ const defaultStreamContext: StreamContextI = {
     currentStep: 0,
     setupStepCount: 0,
     speed: 1,
-    textSpeed: 50,
+    textSpeed: 60,
     turnDelay: 5000,
     alwaysScroll: false,
-    chunkBy: 'char',
+    chunkBy: 'word',
   },
   steps: [],
   currentModelId: '',
@@ -96,10 +96,13 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
     defaultStreamContext.playback.textSpeed;
   const chunkBy = params.has('chunkBy') ?
     params.get('chunkBy') :
-    'char';
+    defaultStreamContext.playback.chunkBy;
   const turnDelay = params.has('turnDelay') ?
     Number.parseInt(params.get('turnDelay')) :
     defaultStreamContext.playback.turnDelay;
+  const episodeDelay = params.has('episodeDelay') ?
+    Number.parseInt(params.get('episodeDelay')) :
+    30000;
   const turnTimeOverride = params.has('turnTimeOverride') ?
     Number.parseInt(params.get('turnTimeOverride')) :
     undefined;
@@ -226,7 +229,10 @@ export const StreamContextProvider = (props: StreamContextProviderProps) => {
       const [nextEpisodeId, ...nextNextEpisodeIds] = nextEpisodeIds;
       const [, ...nextScores] = scores;
       console.log(`Continuing playback to episode ${nextEpisodeId}`);
-      await sleep(30000);
+      // Wait for the current turn to end.
+      await sleep(getTurnTime(getActiveModelStep(currentStep), playback));
+      console.log(`Turn complete, waiting ${episodeDelay}ms`);
+      await sleep(episodeDelay);
       if (nextNextEpisodeIds.length) {
         params.set('nextEpisodeIds', nextNextEpisodeIds.join(','))
       } else {

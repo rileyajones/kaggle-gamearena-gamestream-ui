@@ -1,10 +1,11 @@
 import 'preact/debug';
 import { render } from 'preact';
 import { LocationProvider, Router, Route } from 'preact-iso';
-import { Home } from './pages/Home/index.jsx';
+import { Home } from './pages/Home/index';
 import { NotFound } from './pages/_404.jsx';
 import { StreamContextProvider } from './context/StreamContext';
 import './style.scss';
+import { Timings } from './pages/Timings';
 
 export function App() {
   return (
@@ -13,6 +14,7 @@ export function App() {
         <StreamContextProvider>
           <Router>
             <Route path="/" component={Home} />
+            <Route path="/timings" component={Timings} />
             <Route default component={NotFound} />
           </Router>
         </StreamContextProvider>
